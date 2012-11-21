@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>jQuery UI Portlet</title>
+    <link rel="stylesheet" href="themes/start/jquery-ui-1.9.1.custom.min.css" />
+    <link rel="stylesheet" href="jquery.portlet.css" />
+    <script src="jquery-1.8.3.js" type="text/javascript"></script>
+    <script src="jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>
+    <script src="jquery.portlet.js"></script>
+    <style>
+    body {font-size: 10pt;}
+    </style>
+    <script>
+    $(function() {
+        $('#portlet-demo').portlet({
+            sortable: true,
+            beforeRefresh: function() {
+                //alert("before refresh");
+            },
+            afterRefresh: function(data) {
+                //alert("after refresh: " + data);
+            },
+            create: function() {
+                //alert('created portlet.');
+            },
+            removeItem: function() {
+                alert('after remove');
+            },
+            columns: [{
+                width: 300,
+                portlets: [{
+                    attrs: {
+                        id: '11'
+                    },
+                    title: 'Feeds',
+                    content: {
+                        type: 'text',
+                        text: 'Feeds contens'
+                    },
+                    js: ['loaded-by-portlet.js']
+                }, {
+                    attrs: {
+                        id: '12'
+                    },
+                    title: 'News',
+                    content: {
+                        type: 'text',
+                        text: 'News contens'
+                    }
+                }]
+            }, {
+                width: 300,
+                portlets: [{
+                    title: 'Shopping',
+                    content: {
+                        type: 'text',
+                        text: 'Shopping contens'
+                    }
+                }]
+            }, {
+                width: 500,
+                portlets: [{
+                    title: 'Ajax',
+                    content: {
+                        type: 'ajax',
+                        url: 'ajax.html'
+                    }
+                }, {
+                    title: 'Ajax Json',
+                    content: {
+                        type: 'ajax',
+                        dataType: 'json',
+                        url: 'ajax.json',
+                        formatter: function(data) {
+                            var ct = "<ul>";
+                            $.each(data, function() {
+                                ct += "<li>" + this.text + "</li>";
+                            });
+                            return ct + "</ul>";
+                        }
+                    }
+                }]
+            }]
+        });
+    });
+    </script>
+</head>
+<body>
+    <div id='portlet-demo'></div>
+</body>
+</html>
