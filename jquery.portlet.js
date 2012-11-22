@@ -1,3 +1,14 @@
+/*
+ * jquery.portlet 1.0.0
+ *
+ * Copyright (c) 2012
+ *   咖啡兔 (http://www.kafeitu.me)
+ *
+ * Dual licensed under the GPL (http://www.gnu.org/licenses/gpl.html)
+ * and MIT (http://www.opensource.org/licenses/mit-license.php) licenses.
+ *
+ * See Detail: http://www.kafeitu.me/jquery-ui-portlet.html
+ */
 (function($) {
     $.widget("kft.portlet", {
         options: {
@@ -29,7 +40,7 @@
                     var item = $('<div/>', {
                         'class': 'ui-portlet-item ui-widget ui-widget-content ui-helper-clearfix ui-corner-all',
                     }).data('option', p).appendTo($column);
-                    if (p.attrs) {
+                    if(p.attrs) {
                         item.attr(p.attrs);
                     }
 
@@ -48,17 +59,28 @@
                     var ct = $('<div/>', {
                         'class': 'ui-portlet-content'
                     }).appendTo(item);
-                    ct.html(_this._content(ct, p, function() {
-                        if(p.js) {
-                            $.each(p.js, function() {
-                                var head = $('head').remove('#loadScript');
-                                $("<script>" + "</script>").attr({
-                                    src: this,
-                                    type: 'text/javascript',
-                                    id: 'loadScript'
-                                }).appendTo(head);
-                            });
-                        }
+
+                    // set attrs
+                    if(p.content.attrs) {
+                        $.each(p.content.attrs, function(k, v) {
+                            var attr = ct.attr(k);
+                            if(attr) {
+                                if(k == 'style' && v.substr(v.length - 1) != ';') {
+                                    attr += ';';
+                                }
+                                if(k == 'class') {
+                                    attr += ' ';
+                                }
+                                attr += v;
+                            }
+                            ct.attr(k, attr);
+                        });
+                    }
+
+                    // load content
+                    ct.html(_this._content.call(_ele, item, p, function() {
+                        // load scripts
+                        _this._loadScripts(p.scripts);
                     }));
                 });
             });
@@ -66,6 +88,7 @@
             // init events
             _this._initEvents();
 
+            // enable/disable sortable
             _this._sortable(o.sortable);
         },
 
@@ -75,13 +98,28 @@
                 this.options[key] = value;
             }
 
-            alert(this);
-
             // need handle speical
             switch(key) {
             case "sortable":
                 this._sortable(value);
                 break;
+            }
+        },
+
+        /**
+         * load java scripts
+         * @param  {[string]} scripts [description]
+         */
+        _loadScripts: function(scripts) {
+            if(scripts) {
+                $.each(scripts, function() {
+                    var head = $('head').remove('#loadScript');
+                    $("<script>" + "</script>").attr({
+                        src: this,
+                        type: 'text/javascript',
+                        id: 'loadScript'
+                    }).appendTo(head);
+                });
             }
         },
 
@@ -125,6 +163,9 @@
             this._hoverable(refresh.parent());
         },
 
+        /**
+         * hoverable
+         */
         _hoverable: function(element) {
             $(element).hover(function() {
                 $(this).addClass('ui-state-hover');
@@ -150,58 +191,91 @@
          */
         refresh: function(event) {
             var o = this.options;
+            var portlet = $(event.target).parents('.ui-portlet');
             var item = $(event.target).parents('.ui-portlet-item');
-            var option = item.data('option');
-            var p = item.data('option');
+            var pio = item.data('option');
             var ct = item.find('.ui-portlet-content');
             var pt = item.parents('.ui-portlet');
 
             // callback
             if($.isFunction(o.beforeRefresh)) {
-                o.beforeRefresh.call(pt, option);
+                o.beforeRefresh.call(pt, pio);
             }
 
-            ct.html(this._content.call(pt, ct, p, function(data) {
+            // set contents
+            ct.html(this._content.call(portlet, item, pio, function(data) {
                 // callback
                 if($.isFunction(o.afterRefresh)) {
-                    o.afterRefresh.call(pt, data, option);
+                    o.afterRefresh.call(pt, data, pio);
                 }
-            }))
+            }));
+
+            // load scripts
+            this._loadScripts(pio.scripts);
         },
 
         /**
          * get content from multi styles
-         * @param  {[type]} ct [.ui-portlet-content]
-         * @param  {[type]} p  [portlet configs]
-         * @param  {[type]} cl [callback after load]
+         * @param  {[type]} item [.ui-portlet-item]
+         * @param  {[type]} pio  [portlet configs]
+         * @param  {[type]} cl   [callback after load]
          */
-        _content: function(ct, p, cl) {
+        _content: function(item, pio, cl) {
             var that = this;
-            var type = p.content.type;
+            var type = pio.content.type;
+            var content = null;
+            var ct = item.find('.ui-portlet-content');
+
+            // before show callback
+            if($.isFunction(pio.content.beforeShow)) {
+                pio.content.beforeShow.call(this, pio.content.text);
+            }
+
             if(type == 'text') {
-                var content = p.content.text;
+                content = pio.content.text;
+
+                // get content from function
+                if($.isFunction(content)) {
+                    content = content(that, item, pio);
+                }
+
                 if($.isFunction(cl)) {
                     cl.call(that, content);
                 }
+                _callAfterShow();
                 return content;
             } else if(type == 'ajax') {
-                var dataType = p.content.dataType || 'html';
+                var dataType = pio.content.dataType || 'html';
                 $.ajax({
-                    url: p.content.url,
+                    url: pio.content.url,
                     dataType: dataType,
+                    beforeSend: function() {
+                        $(ct).html('Loading...');
+                    },
                     success: function(data, textStatus, jqXHR) {
                         if(dataType == 'html') {
+                            content = data;
                             $(ct).html(data);
                         } else if(dataType == 'json') {
-                            $(ct).html(p.content.formatter(data));
+                            content = pio.content.formatter(data)
+                            $(ct).html(content);
                         }
                         if($.isFunction(cl)) {
                             cl.call(that, data);
                         }
                     }
                 });
-
             }
+
+            // after show callback
+
+
+            function _callAfterShow() {
+                if($.isFunction(pio.content.afterShow)) {
+                    pio.content.afterShow.call(that, pio.content.text);
+                }
+            }
+
         },
 
         /**

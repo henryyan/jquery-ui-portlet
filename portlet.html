@@ -3,13 +3,21 @@
 <head>
     <meta charset="utf-8" />
     <title>jQuery UI Portlet</title>
-    <link rel="stylesheet" href="themes/start/jquery-ui-1.9.1.custom.min.css" />
+    <!-- jquery 1.4 and jquery ui 1.8 -->
+    <link rel="stylesheet" href="themes/1.8/start/jquery-ui-1.8.5.custom.css" />
     <link rel="stylesheet" href="jquery.portlet.css" />
-    <script src="jquery-1.8.3.js" type="text/javascript"></script>
-    <script src="jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>
+
+    <script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
+
+    <!--<link rel="stylesheet" href="themes/1.9/start/jquery-ui-1.9.1.custom.min.css" />-->
+    <!--<script src="jquery-1.8.3.js" type="text/javascript"></script>-->
+    <!--<script src="jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
+
     <script src="jquery.portlet.js"></script>
     <style>
     body {font-size: 10pt;}
+    .highlight-content {color: red;}
     </style>
     <script>
     $(function() {
@@ -31,22 +39,31 @@
                 width: 300,
                 portlets: [{
                     attrs: {
-                        id: '11'
+                        id: 'feeds'
                     },
                     title: 'Feeds',
                     content: {
                         type: 'text',
-                        text: 'Feeds contens'
+                        text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
+                        beforeShow: function(aa) {
+                            //alert('before show, content is: ' + aa);
+                        },
+                        afterShow: function() {
+                            //alert('after show');
+                        },
                     },
-                    js: ['loaded-by-portlet.js']
+                    scripts: ['loaded-by-portlet.js']
                 }, {
                     attrs: {
-                        id: '12'
+                        id: 'news'
                     },
                     title: 'News',
                     content: {
                         type: 'text',
-                        text: 'News contens'
+                        text: function() {
+                            //return $('#newsTemplate').html();
+                            return $('#newsTemplate ul');
+                        }
                     }
                 }]
             }, {
@@ -54,8 +71,11 @@
                 portlets: [{
                     title: 'Shopping',
                     content: {
+                        attrs: {
+                            'class': 'highlight-content'
+                        },
                         type: 'text',
-                        text: 'Shopping contens'
+                        text: 'Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>'
                     }
                 }]
             }, {
@@ -67,7 +87,7 @@
                         url: 'ajax.html'
                     }
                 }, {
-                    title: 'Ajax Json',
+                    title: 'Ajax Json Datas',
                     content: {
                         type: 'ajax',
                         dataType: 'json',
@@ -87,8 +107,14 @@
     </script>
 </head>
 <body>
-    <div style="font-size:17px">基于jQuery UI扩展的Portlet插件，项目地址： <a href="https://github.com/henryyan/jquery-ui-portlet">https://github.com/henryyan/jquery-ui-portlet</a></div>
-    <hr/>
     <div id='portlet-demo'></div>
+
+    <!-- 模板 -->
+    <div id="newsTemplate" style="display:nonw">
+        <ul>
+            <li><a href='http://www.kafeitu.me/'>http://www.kafeitu.me</a></li>
+            <li><a href='https://github.com/henryyan'>https://github.com/henryyan</a></li>
+        </ul>
+    </div>
 </body>
 </html>
