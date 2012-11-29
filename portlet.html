@@ -23,12 +23,6 @@
     $(function() {
         $('#portlet-demo').portlet({
             sortable: true,
-            beforeRefresh: function() {
-                //alert("before refresh");
-            },
-            afterRefresh: function(data) {
-                //alert("after refresh: " + data);
-            },
             create: function() {
                 //alert('created portlet.');
             },
@@ -41,7 +35,10 @@
                     attrs: {
                         id: 'feeds'
                     },
-                    title: 'Feeds',
+                    title: function() {
+                        var d = new Date();
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
+                    },
                     content: {
                         type: 'text',
                         text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
@@ -50,7 +47,7 @@
                         },
                         afterShow: function() {
                             //alert('after show');
-                        },
+                        }
                     },
                     scripts: ['loaded-by-portlet.js']
                 }, {
@@ -58,11 +55,17 @@
                         id: 'news'
                     },
                     title: 'News',
+                    beforeRefresh: function() {
+                        alert("before refresh");
+                    },
+                    afterRefresh: function(data) {
+                        //alert("after refresh: " + data);
+                    },
                     content: {
                         type: 'text',
                         text: function() {
-                            //return $('#newsTemplate').html();
-                            return $('#newsTemplate ul');
+                            return $('#newsTemplate').html();
+                            //return $('#newsTemplate ul');
                         }
                     }
                 }]
@@ -92,7 +95,7 @@
                         type: 'ajax',
                         dataType: 'json',
                         url: 'ajax.json',
-                        formatter: function(data) {
+                        formatter: function(o, pio, data) {
                             var ct = "<ul>";
                             $.each(data, function() {
                                 ct += "<li>" + this.text + "</li>";
@@ -110,7 +113,7 @@
     <div id='portlet-demo'></div>
 
     <!-- 模板 -->
-    <div id="newsTemplate" style="display:nonw">
+    <div id="newsTemplate" style="display:none">
         <ul>
             <li><a href='http://www.kafeitu.me/'>http://www.kafeitu.me</a></li>
             <li><a href='https://github.com/henryyan'>https://github.com/henryyan</a></li>

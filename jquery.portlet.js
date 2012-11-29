@@ -14,8 +14,6 @@
         options: {
             columns: {},
             sortable: true,
-            beforeRefresh: null,
-            afterRefresh: null,
             removeItem: null
         },
 
@@ -47,7 +45,12 @@
                     // title
                     var title = $('<div/>', {
                         'class': 'ui-portlet-header ui-widget-header ui-corner-all',
-                        html: p.title
+                        html: function() {
+                            if ($.isFunction(p.title)) {
+                                return p.title;
+                            }
+                            return p.title;
+                        }
                     }).appendTo(item);
 
                     // event element
@@ -78,10 +81,10 @@
                     }
 
                     // load content
-                    ct.html(_this._content.call(_ele, item, p, function() {
+                    _this._content.call(_ele, item, p, function(data) {
                         // load scripts
                         _this._loadScripts(p.scripts);
-                    }));
+                    });
                 });
             });
 
@@ -198,17 +201,17 @@
             var pt = item.parents('.ui-portlet');
 
             // callback
-            if($.isFunction(o.beforeRefresh)) {
-                o.beforeRefresh.call(pt, pio);
+            if($.isFunction(pio.beforeRefresh)) {
+                pio.beforeRefresh.call(pt, pio);
             }
 
             // set contents
-            ct.html(this._content.call(portlet, item, pio, function(data) {
+            this._content.call(portlet, item, pio, function(data) {
                 // callback
-                if($.isFunction(o.afterRefresh)) {
-                    o.afterRefresh.call(pt, data, pio);
+                if($.isFunction(pio.afterRefresh)) {
+                    pio.afterRefresh.call(pt, data, pio);
                 }
-            }));
+            });
 
             // load scripts
             this._loadScripts(pio.scripts);
@@ -221,6 +224,7 @@
          * @param  {[type]} cl   [callback after load]
          */
         _content: function(item, pio, cl) {
+            var o = this.options;
             var that = this;
             var type = pio.content.type;
             var content = null;
@@ -242,8 +246,8 @@
                 if($.isFunction(cl)) {
                     cl.call(that, content);
                 }
-                _callAfterShow();
-                return content;
+                ct.html(content);
+                _callAfterShow(pio.content.text);
             } else if(type == 'ajax') {
                 var dataType = pio.content.dataType || 'html';
                 $.ajax({
@@ -257,9 +261,10 @@
                             content = data;
                             $(ct).html(data);
                         } else if(dataType == 'json') {
-                            content = pio.content.formatter(data)
+                            content = pio.content.formatter(o, pio, data)
                             $(ct).html(content);
                         }
+                        _callAfterShow(content);
                         if($.isFunction(cl)) {
                             cl.call(that, data);
                         }
@@ -267,12 +272,12 @@
                 });
             }
 
-            // after show callback
-
-
-            function _callAfterShow() {
+            /**
+             * after show callback
+             */
+            function _callAfterShow(content) {
                 if($.isFunction(pio.content.afterShow)) {
-                    pio.content.afterShow.call(that, pio.content.text);
+                    pio.content.afterShow.call(that, content);
                 }
             }
 
