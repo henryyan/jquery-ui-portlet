@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.0.0
+ * jquery.portlet 1.0.1
  *
  * Copyright (c) 2012
  *   咖啡兔 (http://www.kafeitu.me)
@@ -131,7 +131,7 @@
          * @param  {[type]} value [true|false]
          */
         _sortable: function(value) {
-            var st = $(".ui-portlet-column").sortable({
+            var st = $(".ui-portlet-column", this.element).sortable({
                 connectWith: ".ui-portlet-column"
             }).disableSelection();
             if(value === true) {
