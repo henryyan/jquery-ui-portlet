@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <style type="text/css">
+    .parameters { width:100%; border:0; border-collapse:collapse }
+	.parameters th,
+	.parameters td { border:1px solid #c5c5c5; padding:5px; background-color:#fff; color:#000 }
+	.parameters th { background:#D9D9D9 !important; border-color:#d9d9d9 !important }
+	.parameters .parameter { font-family:Fixed, monospace }
+	.parameters ul li {line-height: 25px;}
+    </style>
+</head>
+<body>
+	<table class="parameters" style='margin-bottom: 2em;'>
+		<caption align="left">表1--jQuery UI Portlet 插件API</caption>
+		<tr>
+			<th>参数</th>
+			<th>描述</th>
+			<th>默认值</th>
+		</tr>
+		<tr>
+			<td>sortable</td>
+			<td>是否启用拖动功能，内部调用sortable插件</td>
+			<td>true</td>
+		</tr>
+		<tr>
+			<td>singleView</td>
+			<td>是否开启单视图模式，双击标题栏可启用单视图模式</td>
+			<td>true</td>
+		</tr>
+		<tr>
+			<td>create</td>
+			<td>当创建portlet组件时被调用</td>
+			<td>null</td>
+		</tr>
+		<tr>
+			<td>removeItem</td>
+			<td>关闭一个portlet时的回调函数</td>
+			<td>null</td>
+		</tr>
+		<tr>
+			<td>columns</td>
+			<td>见表2</td>
+			<td>null</td>
+		</tr>
+	</table>
+
+	<table class="parameters" style='margin-bottom: 2em;'>
+		<caption align="left">表2--jQuery UI Portlet 插件API--columns</caption>
+		<tr>
+			<th>参数</th>
+			<th>描述</th>
+			<th>默认值</th>
+		</tr>
+		<tr>
+			<td>width</td>
+			<td>宽度</td>
+			<td>300</td>
+		</tr>
+		<tr>
+			<td>portlets</td>
+			<td colspan="2">
+				<table class="parameters">
+					<tr>
+						<th>参数</th>
+						<th>描述</th>
+						<th>默认值</th>
+					</tr>
+					<tr>
+						<td>attrs</td>
+						<td>portlet的属性， json数组格式</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>title</td>
+						<td>portlet的title，支持：静态文本，function</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>beforeRefresh</td>
+						<td>刷新portlet之前被调用</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>afterRefresh</td>
+						<td>刷新portlet之后被调用</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>content</td>
+						<td>
+							<ul>
+								<li><b>type:</b>内容获取方式：text、ajax</li>
+								<li><b>text:</b>portlet的内容，html或者function</li>
+								<li><b>style:</b>设置内容区域的样式，目前支持属性：<b>height</b></li>
+								<li><b>beforeShow:</b>设置内容之前被调用</li>
+								<li><b>afterShow:</b>设置内容之后被调用</li>
+								<li><b>url:</b>当type:'ajax'时需要指定数据来源的网址</li>
+								<li><b>dataType:</b>当type:'ajax'时需要指定获取的数据类型，所有jquery的ajax支持的数据类型，目前支持：html、json</li>
+								<li><b>formatter:</b>当type:'ajax'并且dataType:'json'时被调用，用来处理json数据从而转换为html。调用时传入三个参数：[表1中的参数，本表中的参数, 数据]</li>
+							</ul>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>scripts</td>
+						<td>数组：指定portlet加载完内容后的js文件路径</td>
+						<td>&nbsp;</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<table class="parameters" style='margin-bottom: 2em;'>
+		<caption align="left">表3--jQuery UI Portlet 插件更新参数&nbsp;$('#portlet1').portlet('option', 'paramName', paramValue)</caption>
+		<tr>
+			<th>参数名称</th>
+			<th>描述</th>
+		</tr>
+		<tr>
+			<td>sortable</td>
+			<td>设置开启/禁用拖动功能</td>
+		</tr>
+	</table>
+</body>
+</html>

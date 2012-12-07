@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>jQuery UI Portlet</title>
+    <!-- jquery 1.4 and jquery ui 1.8 -->
+    <link rel="stylesheet" href="themes/1.8/start/jquery-ui-1.8.5.custom.css" />
+    <link rel="stylesheet" href="jquery.portlet.css" />
+
+    <script src="jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
+
+    <!--<link rel="stylesheet" href="themes/1.9/start/jquery-ui-1.9.1.custom.min.css" />-->
+    <!--<script src="jquery-1.8.3.js" type="text/javascript"></script>-->
+    <!--<script src="jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
+
+    <script src="jquery.portlet.js"></script>
+    <style>
+    body {font-size: 13px;}
+    .highlight-content {color: red;}
+    </style>
+    <script>
+    $(function() {
+        $('#portlet-demo').portlet({
+            sortable: false,
+            columns: [{
+                width: 350,
+                portlets: [{
+                    attrs: {
+                        id: 'feeds'
+                    },
+                    title: function() {
+                        var d = new Date();
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
+                    },
+                    content: {
+                        //设置区域内容属性
+                        style: {
+                            height: 100
+                        },
+                        type: 'text',
+                        text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
+                        beforeShow: function(aa) {
+                            //alert('before show, content is: ' + aa);
+                        },
+                        afterShow: function() {
+                            //alert('after show');
+                        }
+                    },
+                    scripts: ['loaded-by-portlet.js']
+                }, {
+                    attrs: {
+                        id: 'news'
+                    },
+                    title: function() {
+                        return 'News' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                    },
+                    beforeRefresh: function() {
+                        alert("before refresh");
+                    },
+                    afterRefresh: function(data) {
+                        //alert("after refresh: " + data);
+                    },
+                    content: {
+                        style: {
+                            height: 100
+                        },
+                        type: 'text',
+                        text: function() {
+                            return $('#newsTemplate').html();
+                            //return $('#newsTemplate ul');
+                        }
+                    }
+                }]
+            }, {
+                width: 500,
+                portlets: [{
+                    title: "Ajax",
+                    content: {
+                        style: {
+                            height: 150
+                        },
+                        type: 'ajax',
+                        url: 'ajax.html'
+                    }
+                }, {
+                    title: 'Ajax Json Datas',
+                    content: {
+                        style: {
+                            height: 150
+                        },
+                        type: 'ajax',
+                        dataType: 'json',
+                        url: 'ajax-fixed-height.json',
+                        formatter: function(o, pio, data) {
+                            var ct = "<ul>";
+                            $.each(data, function() {
+                                ct += "<li>" + this.text + "</li>";
+                            });
+                            return ct + "</ul>";
+                        }
+                    }
+                }]
+            }]
+        });
+
+        // 启用拖动
+        $('#enable').button({
+            icons: {
+                primary: 'ui-icon-check'
+            }
+        }).click(function() {
+            $('#portlet-demo').portlet('option', 'sortable', true);
+        });
+
+        // 禁用拖动
+        $('#disable').button({
+            icons: {
+                primary: 'ui-icon-closethick'
+            }
+        }).click(function() {
+            $('#portlet-demo').portlet('option', 'sortable', false);
+        });
+    });
+    </script>
+</head>
+<body>
+    <div>
+        <button id='enable'>启用拖动</button>
+        <button id='disable'>禁用拖动</button>
+        <code>$('#portlet-demo').portlet('option', 'sortable', true);</code>
+    </div>
+    <hr class='ui-widget-content' />
+    <div id='portlet-demo'></div>
+
+    <!-- 模板 -->
+    <div id="newsTemplate" style="display:none">
+        <ul>
+            <li><a href='http://www.kafeitu.me/'>http://www.kafeitu.me</a></li>
+            <li><a href='https://github.com/henryyan'>https://github.com/henryyan</a></li>
+        </ul>
+    </div>
+</body>
+</html>

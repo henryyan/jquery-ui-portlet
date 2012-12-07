@@ -14,6 +14,7 @@
         options: {
             columns: {},
             sortable: true,
+            singleView: true,
             removeItem: null
         },
 
@@ -46,7 +47,7 @@
                     var title = $('<div/>', {
                         'class': 'ui-portlet-header ui-widget-header ui-corner-all',
                         html: function() {
-                            if ($.isFunction(p.title)) {
+                            if($.isFunction(p.title)) {
                                 return p.title;
                             }
                             return p.title;
@@ -63,6 +64,11 @@
                         'class': 'ui-portlet-content'
                     }).appendTo(item);
 
+                    // set content style
+                    if(p.content.style) {
+                        $(ct).css(p.content.style);
+                    }
+
                     // set attrs
                     if(p.content.attrs) {
                         $.each(p.content.attrs, function(k, v) {
@@ -75,8 +81,6 @@
                                     attr += ' ';
                                 }
                                 attr += v;
-                            }else{
-                            	attr = v;
                             }
                             ct.attr(k, attr);
                         });
@@ -93,10 +97,18 @@
             // init events
             _this._initEvents();
 
+            // bind single view
+            _this._regSingleView();
+
             // enable/disable sortable
             _this._sortable(o.sortable);
         },
 
+        /**
+         * set option for plugin
+         * @param {[type]} key   key
+         * @param {[type]} value value
+         */
         _setOption: function(key, value) {
             // static options
             if(this.options[key]) {
@@ -109,6 +121,33 @@
                 this._sortable(value);
                 break;
             }
+        },
+
+        /**
+         * single view
+         */
+        _regSingleView: function() {
+            var _ele = this.element;
+            $(_ele).find('.ui-portlet-header').dblclick(function() {
+                var $item = $(this).parents('.ui-portlet-item');
+                // recovery normal model
+                if($item.hasClass('ui-portlet-single-view')) {
+                    $(_ele).find('.ui-portlet-item').show();
+                    $item.removeClass('ui-portlet-single-view').css({
+                        position: 'static',
+                        width: $item.data('width')
+                    }).removeData('width');
+                } else {
+                    // enable single view
+                    $(_ele).find('.ui-portlet-item').hide();
+                    // move left:0 top:0, set width use body's width
+                    $item.show().addClass('ui-portlet-single-view').data('width', $item.width()).css({
+                        position: 'absolute',
+                        left: 0,
+                        top: 0
+                    }).width($(_ele).width());
+                }
+            });
         },
 
         /**
@@ -137,8 +176,10 @@
                 connectWith: ".ui-portlet-column"
             }).disableSelection();
             if(value === true) {
+                $(this.element).find('.ui-portlet-header').css('cursor', 'move');
                 st.sortable('enable');
             } else {
+                $(this.element).find('.ui-portlet-header').css('cursor', 'default');
                 st.sortable('disable');
             }
         },
@@ -277,6 +318,7 @@
             /**
              * after show callback
              */
+
             function _callAfterShow(content) {
                 if($.isFunction(pio.content.afterShow)) {
                     pio.content.afterShow.call(that, content);
