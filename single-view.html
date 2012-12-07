@@ -32,7 +32,19 @@
                     },
                     title: function() {
                         var d = new Date();
-                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
+                    },
+                    singleView: {
+                        width: function() {
+                            return $(this).parents('.ui-portlet').width() * 0.5;
+                        },
+                        height: 500,
+                        enable: function() {
+                            //alert('触发了单视图模式');
+                        },
+                        recovery: function() {
+                            //alert('还原了单视图模式');
+                        }
                     },
                     content: {
                         //设置区域内容属性
@@ -53,9 +65,7 @@
                     attrs: {
                         id: 'news'
                     },
-                    title: function() {
-                        return 'News' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
-                    },
+                    title: 'News',
                     beforeRefresh: function() {
                         alert("before refresh");
                     },
@@ -76,9 +86,7 @@
             }, {
                 width: 500,
                 portlets: [{
-                    title: function() {
-                        return 'Ajax' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
-                    },
+                    title: 'Ajax',
                     content: {
                         style: {
                             height: 150
@@ -87,12 +95,22 @@
                         url: 'ajax.html'
                     }
                 }, {
-                    title: function() {
-                        return 'Ajax Json Datas' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
-                    },
+                    title: 'Ajax Json Datas',
                     content: {
                         style: {
                             height: 150
+                        },
+                        singleView: {
+                            width: function() {
+                                return $(this).parents('.ui-portlet').width() * 0.5;
+                            },
+                            height: 500,
+                            enable: function() {
+                                //alert('触发了单视图模式');
+                            },
+                            recovery: function() {
+                                //alert('还原了单视图模式');
+                            }
                         },
                         type: 'ajax',
                         dataType: 'json',

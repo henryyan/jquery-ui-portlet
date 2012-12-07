@@ -23,27 +23,22 @@
     $(function() {
         $('#portlet-demo').portlet({
             sortable: true,
-            create: function() {
-                //alert('created portlet.');
-            },
-            removeItem: function() {
-                alert('after remove');
-            },
+            singleView: true,
             columns: [{
-                width: 250,
+                width: 350,
                 portlets: [{
                     attrs: {
                         id: 'feeds'
                     },
                     title: function() {
                         var d = new Date();
-                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
                     },
                     icon: 'ui-icon-signal-diag',
                     content: {
                         //设置区域内容属性
                         style: {
-                            height: '200px'
+                            height: 100
                         },
                         type: 'text',
                         text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
@@ -59,16 +54,13 @@
                     attrs: {
                         id: 'news'
                     },
-                    title: 'News',
-                    beforeRefresh: function() {
-                        alert("before refresh");
+                    title: function() {
+                        return 'News' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
                     },
-                    afterRefresh: function(data) {
-                        //alert("after refresh: " + data);
-                    },
+                    icon: 'ui-icon-document',
                     content: {
                         style: {
-                            height: '200'
+                            height: 100
                         },
                         type: 'text',
                         text: function() {
@@ -78,31 +70,31 @@
                     }
                 }]
             }, {
-                width: 200,
+                width: 500,
                 portlets: [{
-                    title: 'Shopping',
+                    title: function() {
+                        return 'Ajax' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
+                    },
+                    icon: 'ui-icon-info',
                     content: {
-                        attrs: {
-                            'class': 'highlight-content'
+                        style: {
+                            height: 150
                         },
-                        type: 'text',
-                        text: 'Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>'
-                    }
-                }]
-            }, {
-                width: 350,
-                portlets: [{
-                    title: 'Ajax',
-                    content: {
                         type: 'ajax',
                         url: 'ajax.html'
                     }
                 }, {
-                    title: 'Ajax Json Datas',
+                    title: function() {
+                        return 'Ajax Json Datas' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
+                    },
+                    icon: 'ui-icon-comment',
                     content: {
+                        style: {
+                            height: 150
+                        },
                         type: 'ajax',
                         dataType: 'json',
-                        url: 'ajax.json',
+                        url: 'ajax-fixed-height.json',
                         formatter: function(o, pio, data) {
                             var ct = "<ul>";
                             $.each(data, function() {
@@ -120,7 +112,8 @@
 <body>
     <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
         <p>
-            插件混合演示
+            <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+            <strong>提示：</strong>和title属性同级，设置：<code>icon: 'ui-icon-document'</code>
         </p>
     </div>
     <hr class='ui-widget-content' />

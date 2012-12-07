@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.0.1
+ * jquery.portlet 1.1.0
  *
  * Copyright (c) 2012
  *   咖啡兔 (http://www.kafeitu.me)
@@ -50,9 +50,14 @@
                             if($.isFunction(p.title)) {
                                 return p.title;
                             }
-                            return p.title;
+                            return "<span class='" + p.icon + "'></span>" + p.title;
                         }
                     }).appendTo(item);
+
+                    // add icon for title
+                    if (p.icon) {
+                        title.prepend("<span class='ui-portlet-header-icon ui-icon " + p.icon + "'></span>");
+                    }
 
                     // event element
                     title.prepend("<a href='#' class='ui-corner-all'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
@@ -130,22 +135,70 @@
             var _ele = this.element;
             $(_ele).find('.ui-portlet-header').dblclick(function() {
                 var $item = $(this).parents('.ui-portlet-item');
+                var p = $item.data('option');
+
                 // recovery normal model
                 if($item.hasClass('ui-portlet-single-view')) {
                     $(_ele).find('.ui-portlet-item').show();
-                    $item.removeClass('ui-portlet-single-view').css({
-                        position: 'static',
-                        width: $item.data('width')
-                    }).removeData('width');
+                    $item.removeClass('ui-portlet-single-view').animate({
+                        width: $item.data('width'),
+                        height: $item.data('height')
+                    }).css({
+                        position: 'static'
+                    }).removeData('width').removeData('height');
+
+                    // callback
+                    if (p.singleView) {
+                        if ($.isFunction(p.singleView.recovery)) {
+                            p.singleView.recovery.call($item, p);
+                        }
+                    }
                 } else {
                     // enable single view
                     $(_ele).find('.ui-portlet-item').hide();
                     // move left:0 top:0, set width use body's width
-                    $item.show().addClass('ui-portlet-single-view').data('width', $item.width()).css({
+                    $item.show().addClass('ui-portlet-single-view').data({
+                        width: $item.width(),
+                        height: $item.height()
+                    }).css({
                         position: 'absolute',
                         left: 0,
                         top: 0
-                    }).width($(_ele).width());
+                    });
+
+                    // set width and height when enable single view
+                    var wh = {};
+                    if (p.singleView) {
+                        // use custom width and height
+                        if (p.singleView.width) {
+                            if ($.isFunction(p.singleView.width)) {
+                                wh.width = p.singleView.width.call($item, p);
+                            } else {
+                                wh.width = p.singleView.width;
+                            }
+                        }
+                        if (p.singleView.height) {
+                            if ($.isFunction(p.singleView.height)) {
+                                wh.height = p.singleView.height.call($item, p);
+                            } else {
+                                wh.height = p.singleView.height;
+                            }
+                        }
+
+                    } else {
+                        // use default width
+                        wh.width = $(_ele).width() + 14;
+                    }
+
+                    $item.animate({
+                        width: wh.width,
+                        height: wh.height
+                    });
+
+                    // callback
+                    if ($.isFunction(p.singleView.enable)) {
+                        p.singleView.enable.call($item, p);
+                    }
                 }
             });
         },
@@ -304,7 +357,7 @@
                             content = data;
                             $(ct).html(data);
                         } else if(dataType == 'json') {
-                            content = pio.content.formatter(o, pio, data)
+                            content = pio.content.formatter(o, pio, data);
                             $(ct).html(content);
                         }
                         _callAfterShow(content);
