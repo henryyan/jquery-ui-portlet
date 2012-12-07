@@ -40,6 +40,10 @@
                         return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
                     },
                     content: {
+                        //设置区域内容属性
+                        attrs: {
+                            style:'height:200px;'
+                        },
                         type: 'text',
                         text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
                         beforeShow: function(aa) {

@@ -75,6 +75,8 @@
                                     attr += ' ';
                                 }
                                 attr += v;
+                            }else{
+                            	attr = v;
                             }
                             ct.attr(k, attr);
                         });
