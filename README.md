@@ -7,9 +7,17 @@ A portlet extend jQuery UI.
 
 **项目主页**：[http://www.kafeitu.me/jquery-ui-portlet.html](http://www.kafeitu.me/jquery-ui-portlet.html)
 
-**在线Demo**：[http://www.kafeitu.me/demo/jquery-ui-portlet/portlet.html](http://www.kafeitu.me/demo/jquery-ui-portlet/portlet.html)
+**在线Demo**：[http://www.kafeitu.me/demo/jquery-ui-portlet/index.html](http://www.kafeitu.me/demo/jquery-ui-portlet/index.html)
 
 ## Changelog
+
+### 1.1.0（2012-12-08）
+
+1. 添加单视图模式
+2. 单视图模式支持动画、回调
+3. 添加内容高度设置
+3. 添加压缩版本的js文件
+5. demo页面大调整
 
 ### 1.0.1 (2012-12-01)
 
