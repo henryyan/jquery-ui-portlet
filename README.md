@@ -3,7 +3,7 @@ jquery-ui-portlet
 
 A portlet extend jQuery UI.
 
-![](http://www.kafeitu.me/files/2012/11/jquery-ui-portlet.png)
+![](http://www.kafeitu.me/files/2012/12/jquery-ui-portlet-v1.1.0.png)
 
 **在线Demo**：[http://www.kafeitu.me/demo/jquery-ui-portlet/index.html](http://www.kafeitu.me/demo/jquery-ui-portlet/index.html)
 
