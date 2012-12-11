@@ -196,7 +196,7 @@
                     });
 
                     // callback
-                    if ($.isFunction(p.singleView.enable)) {
+                    if (p.singleView && $.isFunction(p.singleView.enable)) {
                         p.singleView.enable.call($item, p);
                     }
                 }
