@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.1.0
+ * jquery.portlet 1.1.1
  *
  * Copyright (c) 2012
  *   咖啡兔 (http://www.kafeitu.me)
@@ -55,7 +55,7 @@
                     }).appendTo(item);
 
                     // add icon for title
-                    if (p.icon) {
+                    if(p.icon) {
                         title.prepend("<span class='ui-portlet-header-icon ui-icon " + p.icon + "'></span>");
                     }
 
@@ -148,8 +148,8 @@
                     }).removeData('width').removeData('height');
 
                     // callback
-                    if (p.singleView) {
-                        if ($.isFunction(p.singleView.recovery)) {
+                    if(p.singleView) {
+                        if($.isFunction(p.singleView.recovery)) {
                             p.singleView.recovery.call($item, p);
                         }
                     }
@@ -168,17 +168,17 @@
 
                     // set width and height when enable single view
                     var wh = {};
-                    if (p.singleView) {
+                    if(p.singleView) {
                         // use custom width and height
-                        if (p.singleView.width) {
-                            if ($.isFunction(p.singleView.width)) {
+                        if(p.singleView.width) {
+                            if($.isFunction(p.singleView.width)) {
                                 wh.width = p.singleView.width.call($item, p);
                             } else {
                                 wh.width = p.singleView.width;
                             }
                         }
-                        if (p.singleView.height) {
-                            if ($.isFunction(p.singleView.height)) {
+                        if(p.singleView.height) {
+                            if($.isFunction(p.singleView.height)) {
                                 wh.height = p.singleView.height.call($item, p);
                             } else {
                                 wh.height = p.singleView.height;
@@ -196,7 +196,7 @@
                     });
 
                     // callback
-                    if (p.singleView && $.isFunction(p.singleView.enable)) {
+                    if(p.singleView && $.isFunction(p.singleView.enable)) {
                         p.singleView.enable.call($item, p);
                     }
                 }
@@ -231,165 +231,170 @@
             if(value === true) {
                 $(this.element).find('.ui-portlet-header').css('cursor', 'move');
                 st.sortable('enable');
-            } else {
-                $(this.element).find('.ui-portlet-header').css('cursor', 'default');
-                st.sortable('disable');
-            }
-        },
-
-        /**
-         * events and handlers
-         * @return {[type]} [description]
-         */
-        _initEvents: function() {
-            var _this = this;
-
-            // toggle contents
-            var toggle = $(".ui-portlet-toggle", this.element).click(function() {
-                $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-                $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content").toggle();
-            });
-
-            var refresh = $(".ui-portlet-refresh", this.element).click(function(event) {
-                _this.refresh.call(_this, event);
-            });
-
-            var close = $(".ui-portlet-close", this.element).click(function(event) {
-                _this._destoryItem.call(_this, event);
-            });
-
-            this._hoverable(toggle.parent());
-            this._hoverable(refresh.parent());
-        },
-
-        /**
-         * hoverable
-         */
-        _hoverable: function(element) {
-            $(element).hover(function() {
-                $(this).addClass('ui-state-hover');
-            }, function() {
-                $(this).removeClass('ui-state-hover');
-            });
-        },
-
-        /**
-         * destory single portlet
-         */
-        _destoryItem: function(event) {
-            var o = this.options;
-            var item = $(event.target).parents('.ui-portlet-item');
-            item.remove();
-            if($.isFunction(o.removeItem)) {
-                o.removeItem();
-            }
-        },
-
-        /**
-         * refresh contents
-         */
-        refresh: function(event) {
-            var o = this.options;
-            var portlet = $(event.target).parents('.ui-portlet');
-            var item = $(event.target).parents('.ui-portlet-item');
-            var pio = item.data('option');
-            var ct = item.find('.ui-portlet-content');
-            var pt = item.parents('.ui-portlet');
-
-            // callback
-            if($.isFunction(pio.beforeRefresh)) {
-                pio.beforeRefresh.call(pt, pio);
-            }
-
-            // set contents
-            this._content.call(portlet, item, pio, function(data) {
-                // callback
-                if($.isFunction(pio.afterRefresh)) {
-                    pio.afterRefresh.call(pt, data, pio);
-                }
-            });
-
-            // load scripts
-            this._loadScripts(pio.scripts);
-        },
-
-        /**
-         * get content from multi styles
-         * @param  {[type]} item [.ui-portlet-item]
-         * @param  {[type]} pio  [portlet configs]
-         * @param  {[type]} cl   [callback after load]
-         */
-        _content: function(item, pio, cl) {
-            var o = this.options;
-            var that = this;
-            var type = pio.content.type;
-            var content = null;
-            var ct = item.find('.ui-portlet-content');
-
-            // before show callback
-            if($.isFunction(pio.content.beforeShow)) {
-                pio.content.beforeShow.call(this, pio.content.text);
-            }
-
-            if(type == 'text') {
-                content = pio.content.text;
-
-                // get content from function
-                if($.isFunction(content)) {
-                    content = content(that, item, pio);
-                }
-
-                if($.isFunction(cl)) {
-                    cl.call(that, content);
-                }
-                ct.html(content);
-                _callAfterShow(pio.content.text);
-            } else if(type == 'ajax') {
-                var dataType = pio.content.dataType || 'html';
-                $.ajax({
-                    url: pio.content.url,
-                    dataType: dataType,
-                    beforeSend: function() {
-                        $(ct).html('Loading...');
-                    },
-                    success: function(data, textStatus, jqXHR) {
-                        if(dataType == 'html') {
-                            content = data;
-                            $(ct).html(data);
-                        } else if(dataType == 'json') {
-                            content = pio.content.formatter(o, pio, data);
-                            $(ct).html(content);
-                        }
-                        _callAfterShow(content);
-                        if($.isFunction(cl)) {
-                            cl.call(that, data);
-                        }
+                $(".ui-portlet-content", this.element).draggable({
+                    start: function(e, ui) {
+                        return false;
                     }
                 });
+        } else {
+            $(this.element).find('.ui-portlet-header').css('cursor', 'default');
+            st.sortable('disable');
+        }
+    },
+
+    /**
+     * events and handlers
+     * @return {[type]} [description]
+     */
+    _initEvents: function() {
+        var _this = this;
+
+        // toggle contents
+        var toggle = $(".ui-portlet-toggle", this.element).click(function() {
+            $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+            $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content").toggle();
+        });
+
+        var refresh = $(".ui-portlet-refresh", this.element).click(function(event) {
+            _this.refresh.call(_this, event);
+        });
+
+        var close = $(".ui-portlet-close", this.element).click(function(event) {
+            _this._destoryItem.call(_this, event);
+        });
+
+        this._hoverable(toggle.parent());
+        this._hoverable(refresh.parent());
+    },
+
+    /**
+     * hoverable
+     */
+    _hoverable: function(element) {
+        $(element).hover(function() {
+            $(this).addClass('ui-state-hover');
+        }, function() {
+            $(this).removeClass('ui-state-hover');
+        });
+    },
+
+    /**
+     * destory single portlet
+     */
+    _destoryItem: function(event) {
+        var o = this.options;
+        var item = $(event.target).parents('.ui-portlet-item');
+        item.remove();
+        if($.isFunction(o.removeItem)) {
+            o.removeItem();
+        }
+    },
+
+    /**
+     * refresh contents
+     */
+    refresh: function(event) {
+        var o = this.options;
+        var portlet = $(event.target).parents('.ui-portlet');
+        var item = $(event.target).parents('.ui-portlet-item');
+        var pio = item.data('option');
+        var ct = item.find('.ui-portlet-content');
+        var pt = item.parents('.ui-portlet');
+
+        // callback
+        if($.isFunction(pio.beforeRefresh)) {
+            pio.beforeRefresh.call(pt, pio);
+        }
+
+        // set contents
+        this._content.call(portlet, item, pio, function(data) {
+            // callback
+            if($.isFunction(pio.afterRefresh)) {
+                pio.afterRefresh.call(pt, data, pio);
+            }
+        });
+
+        // load scripts
+        this._loadScripts(pio.scripts);
+    },
+
+    /**
+     * get content from multi styles
+     * @param  {[type]} item [.ui-portlet-item]
+     * @param  {[type]} pio  [portlet configs]
+     * @param  {[type]} cl   [callback after load]
+     */
+    _content: function(item, pio, cl) {
+        var o = this.options;
+        var that = this;
+        var type = pio.content.type;
+        var content = null;
+        var ct = item.find('.ui-portlet-content');
+
+        // before show callback
+        if($.isFunction(pio.content.beforeShow)) {
+            pio.content.beforeShow.call(this, pio.content.text);
+        }
+
+        if(type == 'text') {
+            content = pio.content.text;
+
+            // get content from function
+            if($.isFunction(content)) {
+                content = content(that, item, pio);
             }
 
-            /**
-             * after show callback
-             */
-
-            function _callAfterShow(content) {
-                if($.isFunction(pio.content.afterShow)) {
-                    pio.content.afterShow.call(that, content);
+            if($.isFunction(cl)) {
+                cl.call(that, content);
+            }
+            ct.html(content);
+            _callAfterShow(pio.content.text);
+        } else if(type == 'ajax') {
+            var dataType = pio.content.dataType || 'html';
+            $.ajax({
+                url: pio.content.url,
+                dataType: dataType,
+                beforeSend: function() {
+                    $(ct).html('Loading...');
+                },
+                success: function(data, textStatus, jqXHR) {
+                    if(dataType == 'html') {
+                        content = data;
+                        $(ct).html(data);
+                    } else if(dataType == 'json') {
+                        content = pio.content.formatter(o, pio, data);
+                        $(ct).html(content);
+                    }
+                    _callAfterShow(content);
+                    if($.isFunction(cl)) {
+                        cl.call(that, data);
+                    }
                 }
-            }
-
-        },
+            });
+        }
 
         /**
-         * destory portlet
+         * after show callback
          */
-        _destroy: function() {
-            this.element.removeClass("ui-portlet").text("");
 
-            // call the base destroy function
-            $.Widget.prototype.destroy.call(this);
-            return this;
+        function _callAfterShow(content) {
+            if($.isFunction(pio.content.afterShow)) {
+                pio.content.afterShow.call(that, content);
+            }
         }
+
+    },
+
+    /**
+     * destory portlet
+     */
+    _destroy: function() {
+        this.element.removeClass("ui-portlet").text("");
+
+        // call the base destroy function
+        $.Widget.prototype.destroy.call(this);
+        return this;
+    }
     });
 
 })(jQuery);
