@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <title>jQuery UI Portlet</title>
     <!-- jquery 1.4 and jquery ui 1.8 -->
-    <link rel="stylesheet" href="themes/1.8/start/jquery-ui-1.8.5.custom.css" />
-    <link rel="stylesheet" href="jquery.portlet.css" />
+    <link rel="stylesheet" href="../lib/themes/1.8/start/jquery-ui-1.8.5.custom.css" />
+    <link rel="stylesheet" href="../css/jquery.portlet.css" />
 
-    <script src="jquery-1.4.4.min.js" type="text/javascript"></script>
-    <script src="jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
+    <script src="../lib/jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="../lib/jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
 
-    <!--<link rel="stylesheet" href="themes/1.9/start/jquery-ui-1.9.1.custom.min.css" />-->
-    <!--<script src="jquery-1.8.3.js" type="text/javascript"></script>-->
-    <!--<script src="jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
+    <!--<link rel="stylesheet" href="../lib/themes/1.9/start/jquery-ui-1.9.1.custom.min.css" />-->
+    <!--<script src="../lib/jquery-1.8.3.js" type="text/javascript"></script>-->
+    <!--<script src="../lib/themes/jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
 
-    <script src="jquery.portlet.js"></script>
+    <script src="../script/jquery.portlet.js"></script>
     <style>
     body {font-size: 13px;}
     .highlight-content {color: red;}
@@ -23,7 +23,6 @@
     $(function() {
         $('#portlet-demo').portlet({
             sortable: true,
-            singleView: true,
             columns: [{
                 width: 350,
                 portlets: [{
@@ -32,19 +31,7 @@
                     },
                     title: function() {
                         var d = new Date();
-                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
-                    },
-                    singleView: {
-                        width: function() {
-                            return $(this).parents('.ui-portlet').width() * 0.5;
-                        },
-                        height: 500,
-                        enable: function() {
-                            //alert('触发了单视图模式');
-                        },
-                        recovery: function() {
-                            //alert('还原了单视图模式');
-                        }
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
                     },
                     content: {
                         //设置区域内容属性
@@ -65,7 +52,9 @@
                     attrs: {
                         id: 'news'
                     },
-                    title: 'News',
+                    title: function() {
+                        return 'News' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                    },
                     beforeRefresh: function() {
                         alert("before refresh");
                     },
@@ -86,7 +75,9 @@
             }, {
                 width: 500,
                 portlets: [{
-                    title: 'Ajax',
+                    title: function() {
+                        return 'Ajax' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
+                    },
                     content: {
                         style: {
                             height: 150
@@ -95,22 +86,12 @@
                         url: 'ajax.html'
                     }
                 }, {
-                    title: 'Ajax Json Datas',
+                    title: function() {
+                        return 'Ajax Json Datas' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
+                    },
                     content: {
                         style: {
                             height: 150
-                        },
-                        singleView: {
-                            width: function() {
-                                return $(this).parents('.ui-portlet').width() * 0.5;
-                            },
-                            height: 500,
-                            enable: function() {
-                                //alert('触发了单视图模式');
-                            },
-                            recovery: function() {
-                                //alert('还原了单视图模式');
-                            }
                         },
                         type: 'ajax',
                         dataType: 'json',
@@ -133,8 +114,7 @@
     <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
         <p>
             <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-            <strong>提示：</strong><b><i>双击</b></i>标题栏启用/恢复单项视图模式
-            <span>，设置参数：singleView: true</span>
+            <strong>提示：</strong>设置content: {style: {height: 150}}固定高度
         </p>
     </div>
     <hr class='ui-widget-content' />

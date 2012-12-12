@@ -4,17 +4,17 @@
     <meta charset="utf-8" />
     <title>jQuery UI Portlet</title>
     <!-- jquery 1.4 and jquery ui 1.8 -->
-    <link rel="stylesheet" href="themes/1.8/start/jquery-ui-1.8.5.custom.css" />
-    <link rel="stylesheet" href="jquery.portlet.css" />
+    <link rel="stylesheet" href="../lib/themes/1.8/start/jquery-ui-1.8.5.custom.css" />
+    <link rel="stylesheet" href="../css/jquery.portlet.css" />
 
-    <script src="jquery-1.4.4.min.js" type="text/javascript"></script>
-    <script src="jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
+    <script src="../lib/jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="../lib/jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
 
-    <!--<link rel="stylesheet" href="themes/1.9/start/jquery-ui-1.9.1.custom.min.css" />-->
-    <!--<script src="jquery-1.8.3.js" type="text/javascript"></script>-->
-    <!--<script src="jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
+    <!--<link rel="stylesheet" href="../lib/themes/1.9/start/jquery-ui-1.9.1.custom.min.css" />-->
+    <!--<script src="../lib/jquery-1.8.3.js" type="text/javascript"></script>-->
+    <!--<script src="../lib/themes/jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
 
-    <script src="jquery.portlet.js"></script>
+    <script src="../script/jquery.portlet.js"></script>
     <style>
     body {font-size: 13px;}
     .highlight-content {color: red;}
@@ -23,22 +23,27 @@
     $(function() {
         $('#portlet-demo').portlet({
             sortable: true,
-            singleView: true,
+            create: function() {
+                //alert('created portlet.');
+            },
+            removeItem: function() {
+                alert('after remove');
+            },
             columns: [{
-                width: 350,
+                width: 250,
                 portlets: [{
                     attrs: {
                         id: 'feeds'
                     },
                     title: function() {
                         var d = new Date();
-                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
                     },
                     icon: 'ui-icon-signal-diag',
                     content: {
                         //设置区域内容属性
                         style: {
-                            height: 100
+                            height: '200px'
                         },
                         type: 'text',
                         text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
@@ -54,13 +59,16 @@
                     attrs: {
                         id: 'news'
                     },
-                    title: function() {
-                        return 'News' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                    title: 'News',
+                    beforeRefresh: function() {
+                        alert("before refresh");
                     },
-                    icon: 'ui-icon-document',
+                    afterRefresh: function(data) {
+                        //alert("after refresh: " + data);
+                    },
                     content: {
                         style: {
-                            height: 100
+                            height: '200'
                         },
                         type: 'text',
                         text: function() {
@@ -70,31 +78,31 @@
                     }
                 }]
             }, {
-                width: 500,
+                width: 200,
                 portlets: [{
-                    title: function() {
-                        return 'Ajax' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
-                    },
-                    icon: 'ui-icon-info',
+                    title: 'Shopping',
                     content: {
-                        style: {
-                            height: 150
+                        attrs: {
+                            'class': 'highlight-content'
                         },
+                        type: 'text',
+                        text: 'Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>'
+                    }
+                }]
+            }, {
+                width: 350,
+                portlets: [{
+                    title: 'Ajax',
+                    content: {
                         type: 'ajax',
                         url: 'ajax.html'
                     }
                 }, {
-                    title: function() {
-                        return 'Ajax Json Datas' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
-                    },
-                    icon: 'ui-icon-comment',
+                    title: 'Ajax Json Datas',
                     content: {
-                        style: {
-                            height: 150
-                        },
                         type: 'ajax',
                         dataType: 'json',
-                        url: 'ajax-fixed-height.json',
+                        url: 'ajax.json',
                         formatter: function(o, pio, data) {
                             var ct = "<ul>";
                             $.each(data, function() {
@@ -112,8 +120,7 @@
 <body>
     <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
         <p>
-            <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-            <strong>提示：</strong>和title属性同级，设置：<code>icon: 'ui-icon-document'</code>
+            插件混合演示
         </p>
     </div>
     <hr class='ui-widget-content' />
