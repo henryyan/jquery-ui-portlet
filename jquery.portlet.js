@@ -370,6 +370,12 @@
                         if($.isFunction(cl)) {
                             cl.call(that, data);
                         }
+                    },
+                    error : function(xhr, error) {
+                        console.debug(xhr);
+                        console.debug(error);
+                        content = "Load Error...";
+                        $(ct).html(content);
                     }
                 });
             }
