@@ -357,7 +357,13 @@
                             content = data;
                             $(ct).html(data);
                         } else if(dataType == 'json') {
-                            content = pio.content.formatter(o, pio, data);
+                            if(typeof pio.content.formatter == "function"){
+                                content = pio.content.formatter(o, pio, data);
+                            }else{
+                                console.log("You have to set content formatter function for:"+pio.title);
+                                content = "Load Error...";
+                            }
+                            
                             $(ct).html(content);
                         }
                         _callAfterShow(content);
