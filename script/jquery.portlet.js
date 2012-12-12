@@ -236,165 +236,174 @@
                         return false;
                     }
                 });
-        } else {
-            $(this.element).find('.ui-portlet-header').css('cursor', 'default');
-            st.sortable('disable');
-        }
-    },
-
-    /**
-     * events and handlers
-     * @return {[type]} [description]
-     */
-    _initEvents: function() {
-        var _this = this;
-
-        // toggle contents
-        var toggle = $(".ui-portlet-toggle", this.element).click(function() {
-            $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-            $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content").toggle();
-        });
-
-        var refresh = $(".ui-portlet-refresh", this.element).click(function(event) {
-            _this.refresh.call(_this, event);
-        });
-
-        var close = $(".ui-portlet-close", this.element).click(function(event) {
-            _this._destoryItem.call(_this, event);
-        });
-
-        this._hoverable(toggle.parent());
-        this._hoverable(refresh.parent());
-    },
-
-    /**
-     * hoverable
-     */
-    _hoverable: function(element) {
-        $(element).hover(function() {
-            $(this).addClass('ui-state-hover');
-        }, function() {
-            $(this).removeClass('ui-state-hover');
-        });
-    },
-
-    /**
-     * destory single portlet
-     */
-    _destoryItem: function(event) {
-        var o = this.options;
-        var item = $(event.target).parents('.ui-portlet-item');
-        item.remove();
-        if($.isFunction(o.removeItem)) {
-            o.removeItem();
-        }
-    },
-
-    /**
-     * refresh contents
-     */
-    refresh: function(event) {
-        var o = this.options;
-        var portlet = $(event.target).parents('.ui-portlet');
-        var item = $(event.target).parents('.ui-portlet-item');
-        var pio = item.data('option');
-        var ct = item.find('.ui-portlet-content');
-        var pt = item.parents('.ui-portlet');
-
-        // callback
-        if($.isFunction(pio.beforeRefresh)) {
-            pio.beforeRefresh.call(pt, pio);
-        }
-
-        // set contents
-        this._content.call(portlet, item, pio, function(data) {
-            // callback
-            if($.isFunction(pio.afterRefresh)) {
-                pio.afterRefresh.call(pt, data, pio);
+            } else {
+                $(this.element).find('.ui-portlet-header').css('cursor', 'default');
+                st.sortable('disable');
             }
-        });
-
-        // load scripts
-        this._loadScripts(pio.scripts);
-    },
-
-    /**
-     * get content from multi styles
-     * @param  {[type]} item [.ui-portlet-item]
-     * @param  {[type]} pio  [portlet configs]
-     * @param  {[type]} cl   [callback after load]
-     */
-    _content: function(item, pio, cl) {
-        var o = this.options;
-        var that = this;
-        var type = pio.content.type;
-        var content = null;
-        var ct = item.find('.ui-portlet-content');
-
-        // before show callback
-        if($.isFunction(pio.content.beforeShow)) {
-            pio.content.beforeShow.call(this, pio.content.text);
-        }
-
-        if(type == 'text') {
-            content = pio.content.text;
-
-            // get content from function
-            if($.isFunction(content)) {
-                content = content(that, item, pio);
-            }
-
-            if($.isFunction(cl)) {
-                cl.call(that, content);
-            }
-            ct.html(content);
-            _callAfterShow(pio.content.text);
-        } else if(type == 'ajax') {
-            var dataType = pio.content.dataType || 'html';
-            $.ajax({
-                url: pio.content.url,
-                dataType: dataType,
-                beforeSend: function() {
-                    $(ct).html('Loading...');
-                },
-                success: function(data, textStatus, jqXHR) {
-                    if(dataType == 'html') {
-                        content = data;
-                        $(ct).html(data);
-                    } else if(dataType == 'json') {
-                        content = pio.content.formatter(o, pio, data);
-                        $(ct).html(content);
-                    }
-                    _callAfterShow(content);
-                    if($.isFunction(cl)) {
-                        cl.call(that, data);
-                    }
-                }
-            });
-        }
+        },
 
         /**
-         * after show callback
+         * events and handlers
+         * @return {[type]} [description]
          */
+        _initEvents: function() {
+            var _this = this;
 
-        function _callAfterShow(content) {
-            if($.isFunction(pio.content.afterShow)) {
-                pio.content.afterShow.call(that, content);
+            // toggle contents
+            var toggle = $(".ui-portlet-toggle", this.element).click(function() {
+                $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+                $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content").toggle();
+            });
+
+            var refresh = $(".ui-portlet-refresh", this.element).click(function(event) {
+                _this.refresh.call(_this, event);
+            });
+
+            var close = $(".ui-portlet-close", this.element).click(function(event) {
+                _this._destoryItem.call(_this, event);
+            });
+
+            this._hoverable(toggle.parent());
+            this._hoverable(refresh.parent());
+        },
+
+        /**
+         * hoverable
+         */
+        _hoverable: function(element) {
+            $(element).hover(function() {
+                $(this).addClass('ui-state-hover');
+            }, function() {
+                $(this).removeClass('ui-state-hover');
+            });
+        },
+
+        /**
+         * destory single portlet
+         */
+        _destoryItem: function(event) {
+            var o = this.options;
+            var item = $(event.target).parents('.ui-portlet-item');
+            item.remove();
+            if($.isFunction(o.removeItem)) {
+                o.removeItem();
             }
+        },
+
+        /**
+         * refresh contents
+         */
+        refresh: function(event) {
+            var o = this.options;
+            var portlet = $(event.target).parents('.ui-portlet');
+            var item = $(event.target).parents('.ui-portlet-item');
+            var pio = item.data('option');
+            var ct = item.find('.ui-portlet-content');
+            var pt = item.parents('.ui-portlet');
+
+            // callback
+            if($.isFunction(pio.beforeRefresh)) {
+                pio.beforeRefresh.call(pt, pio);
+            }
+
+            // set contents
+            this._content.call(portlet, item, pio, function(data) {
+                // callback
+                if($.isFunction(pio.afterRefresh)) {
+                    pio.afterRefresh.call(pt, data, pio);
+                }
+            });
+
+            // load scripts
+            this._loadScripts(pio.scripts);
+        },
+
+        /**
+         * get content from multi styles
+         * @param  {[type]} item [.ui-portlet-item]
+         * @param  {[type]} pio  [portlet configs]
+         * @param  {[type]} cl   [callback after load]
+         */
+        _content: function(item, pio, cl) {
+            var o = this.options;
+            var that = this;
+            var type = pio.content.type;
+            var content = null;
+            var ct = item.find('.ui-portlet-content');
+
+            // before show callback
+            if($.isFunction(pio.content.beforeShow)) {
+                pio.content.beforeShow.call(this, pio.content.text);
+            }
+
+            if(type == 'text') {
+                content = pio.content.text;
+
+                // get content from function
+                if($.isFunction(content)) {
+                    content = content(that, item, pio);
+                }
+
+                if($.isFunction(cl)) {
+                    cl.call(that, content);
+                }
+                ct.html(content);
+                _callAfterShow(pio.content.text);
+            } else if(type == 'ajax') {
+                var dataType = pio.content.dataType || 'html';
+                $.ajax({
+                    url: pio.content.url,
+                    dataType: dataType,
+                    beforeSend: function() {
+                        $(ct).html('Loading...');
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        if(dataType == 'html') {
+                            content = data;
+                            $(ct).html(data);
+                        } else if(dataType == 'json') {
+                            if($.isFunction(pio.content.formatter)) {
+                                content = pio.content.formatter(o, pio, data);
+                                $(ct).html(content);
+                            }
+                        }
+                        _callAfterShow(content);
+                        if($.isFunction(cl)) {
+                            cl.call(that, data);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        var content = "<span style='padding:0.2em' class='ui-state-error ui-corner-all'>Load Error...</span>";
+                        $(ct).html(content);
+                        if ($.isFunction(pio.content.error)) {
+                            pio.content.error.call(ct, jqXHR, textStatus, errorThrown);
+                        }
+                    }
+                });
+            }
+
+            /**
+             * after show callback
+             */
+
+            function _callAfterShow(content) {
+                if($.isFunction(pio.content.afterShow)) {
+                    pio.content.afterShow.call(that, content);
+                }
+            }
+
+        },
+
+        /**
+         * destory portlet
+         */
+        _destroy: function() {
+            this.element.removeClass("ui-portlet").text("");
+
+            // call the base destroy function
+            $.Widget.prototype.destroy.call(this);
+            return this;
         }
-
-    },
-
-    /**
-     * destory portlet
-     */
-    _destroy: function() {
-        this.element.removeClass("ui-portlet").text("");
-
-        // call the base destroy function
-        $.Widget.prototype.destroy.call(this);
-        return this;
-    }
     });
 
 })(jQuery);

@@ -98,6 +98,16 @@
                         url: 'ajax.html'
                     }
                 }, {
+                    title: 'Ajax 错误',
+                    content: {
+                        type: 'ajax',
+                        url: 'noexsit.html',
+                        error: function() {
+                            $(this).append('<br/><br/>捕获到ajax错误');
+                            // alert('出错了');
+                        }
+                    }
+                }, {
                     title: 'Ajax Json Datas',
                     content: {
                         type: 'ajax',

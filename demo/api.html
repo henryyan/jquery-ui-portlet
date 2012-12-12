@@ -116,6 +116,7 @@
 								<li><b>url:</b>当type:'ajax'时需要指定数据来源的网址</li>
 								<li><b>dataType:</b>当type:'ajax'时需要指定获取的数据类型，所有jquery的ajax支持的数据类型，目前支持：html、json</li>
 								<li><b>formatter:</b>当type:'ajax'并且dataType:'json'时被调用，用来处理json数据从而转换为html。<br/>调用时传入三个参数：[表1中的参数，本表中的参数, 数据]</li>
+								<li><b>error:</b>当ajax请求出现错误时调用，参数参考jqueyr的api，this对象为当前的内容区域</li>
 							</ul>
 						</td>
 						<td>&nbsp;</td>
