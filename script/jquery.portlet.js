@@ -30,15 +30,12 @@
             $.each(o.columns, function(ci, c) {
 
                 var $column = $('<div/>', {
-                    'class': 'ui-portlet-column',
                     width: c.width
-                }).appendTo(_ele);
+                }).addClass('ui-portlet-column').appendTo(_ele);
 
                 $.each(c.portlets, function(pi, p) {
 
-                    var item = $('<div/>', {
-                        'class': 'ui-portlet-item ui-widget ui-widget-content ui-helper-clearfix ui-corner-all',
-                    }).data('option', p).appendTo($column);
+                    var item = $('<div/>').addClass('ui-portlet-item ui-widget ui-widget-content ui-helper-clearfix ui-corner-all').data('option', p).appendTo($column);
                     if(p.attrs) {
                         item.attr(p.attrs);
                     }
