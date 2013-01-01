@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.1.1
+ * jquery.portlet 1.1.2
  *
  * Copyright (c) 2012
  *   咖啡兔 (http://www.kafeitu.me)
@@ -10,7 +10,7 @@
  * See Detail: http://www.kafeitu.me/jquery-ui-portlet.html
  */
 (function($) {
-    $.widget("kft.portlet", {
+    $.widget("ui.portlet", {
         options: {
             columns: {},
             sortable: true,
