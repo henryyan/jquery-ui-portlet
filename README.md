@@ -7,7 +7,7 @@ A portlet extend jQuery UI.
 
 **在线Demo**：[http://www.kafeitu.me/demo/jquery-ui-portlet/index.html](http://www.kafeitu.me/demo/jquery-ui-portlet/index.html)
 
-**浏览器支持：**Chrome、Firefox、Safari、IE8+
+**浏览器支持：**Chrome、Firefox、Safari、IE6+
 
 ## Changelog
 
