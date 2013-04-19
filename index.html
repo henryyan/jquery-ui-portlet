@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>jQuery UI Portlet</title>
     <!-- jquery 1.4 and jquery ui 1.8 -->
-    <link rel="stylesheet" href="lib/themes/1.8/start/jquery-ui-1.8.5.custom.css" />
+    <link rel="stylesheet" href="lib/themes/1.10/start/jquery-ui-1.10.2.custom.min.css" />
     <link rel="stylesheet" href="css/jquery.portlet.css?v=1.1.3" />
     <style type="text/css">
     body {font-size: 10px;}
@@ -18,9 +18,9 @@
     }
     .ui-layout-resizer div {background-color: red;}
     </style>
-    <script src="lib/jquery-1.4.4.min.js" type="text/javascript"></script>
-    <script src="lib/jquery-ui-1.8.14.custom.min.js" type="text/javascript"></script>
-    <script src="lib/jquery.layout.js" type="text/javascript"></script>
+    <script src="lib/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="lib/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
+    <script src="lib/jquery.layout-latest.min.js" type="text/javascript"></script>
     <script src="script/jquery.portlet.pack.js?v=1.1.3"></script>
     <script>
         $(function() {
@@ -35,7 +35,7 @@
             $('#tabs').tabs();
 
             $('#menu a').click(function() {
-                $('#mainFrame').attr('src', $(this).attr('href'));
+                $('#mainFrame').attr('src', $(this).attr('rel'));
             });
 
             window.onresize = function() {
@@ -60,17 +60,17 @@
     </div>
     <div id="LeftPane" class="ui-layout-west ui-widget ui-widget-content">
         <ul id="menu">
-            <li><a href="#">==插件文档==</a></li>
-            <li><a href="demo/api.html">插件API</a></li>
-            <li><a href="demo/source-on-github.html">插件源码</a></li>
-            <li><a href="#">==插件演示==</a></li>
-            <li><a href="demo/mix.html">综合演示</a></li>
-            <li><a href="demo/fixed-height.html">固定高度</a></li>
-            <li><a href="demo/disable-drag.html">禁止拖动</a></li>
-            <li><a href="demo/single-view.html">单视图模式</a></li>
-            <li><a href="demo/icon.html">标题栏图标</a></li>
-            <li><a href="demo/colspan.html">跨列模式</a></li>
-            <li><a href="demo/bootstrap.html">Bootstrap主题</a></li>
+            <li><a href='#' rel="#">==插件文档==</a></li>
+            <li><a href='#' rel="demo/api.html">插件API</a></li>
+            <li><a href='#' rel="demo/source-on-github.html">插件源码</a></li>
+            <li><a href='#' rel="#">==插件演示==</a></li>
+            <li><a href='#' rel="demo/mix.html">综合演示</a></li>
+            <li><a href='#' rel="demo/fixed-height.html">固定高度</a></li>
+            <li><a href='#' rel="demo/disable-drag.html">禁止拖动</a></li>
+            <li><a href='#' rel="demo/single-view.html">单视图模式</a></li>
+            <li><a href='#' rel="demo/icon.html">标题栏图标</a></li>
+            <li><a href='#' rel="demo/colspan.html">跨列模式</a></li>
+            <li><a href='#' rel="demo/bootstrap.html">Bootstrap主题</a></li>
         </ul>
     </div>
     <div id="RightPane" class="ui-layout-center ui-helper-reset ui-widget-content">
