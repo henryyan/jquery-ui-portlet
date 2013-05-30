@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <style type="text/css">
+    body {
+    	font-size: 14px;
+    }
     .parameters { width:100%; border:0; border-collapse:collapse }
 	.parameters th,
 	.parameters td { border:1px solid #c5c5c5; padding:5px; background-color:#fff; color:#000 }
@@ -40,9 +43,28 @@
 			<td>null</td>
 		</tr>
 		<tr>
-			<td>columns</td>
+			<td>
+				<a href="demo/colspan.html">columns</a>
+			</td>
 			<td>见表2</td>
 			<td>null</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="demo/drag-events.html">events</a>
+			</td>
+			<td>拖动事件：在回调function中可以获取this（被拖动的单个portlet）对象
+<pre>
+drag: {
+    start: function( event, ui ) {// 拖动开始},
+    stop: function( event, ui ) {// 拖动结束},
+    over: function( event, ui ) {// 拖动过程中停止（此时未结束拖动事件，也就是stop还未触发）}
+}
+</pre>
+			</td>
+			<td>
+				没有默认事件
+			</td>
 		</tr>
 	</table>
 
@@ -139,7 +161,7 @@
 		</tr>
 		<tr>
 			<td>
-				<a href="disable-drag.html">sortable</a>
+				<a href="demo/disable-drag.html">sortable</a>
 			</td>
 			<td>
 				设置开启/禁用拖动功能
@@ -157,7 +179,7 @@
 		</tr>
 		<tr>
 			<td>
-				<a href="getindexs.html">index</a>
+				<a href="demo/getindexs.html">index</a>
 			</td>
 			<td>获取每一个portlet的XY坐标</td>
 			<td>
@@ -182,7 +204,7 @@ var indexs = $('#portlet-demo').portlet('index');
 			</td>
 		</tr>
 		<tr>
-			<td><a href="toggle.html">toggle</a></td>
+			<td><a href="demo/toggle.html">toggle</a></td>
 			<td>
 				切换<b>单个</b>portlet的显示，如果没有传入参数默认使用<b>toggle</b>，如果传入了参数[hide, show]则执行单个动画。
 			</td>
@@ -190,7 +212,7 @@ var indexs = $('#portlet-demo').portlet('index');
 		</tr>
 		<tr>
 			<td>
-				<a href="toggle.html">toggleAll</a>
+				<a href="demo/toggle.html">toggleAll</a>
 			</td>
 			<td>
 				切换<b>全部</b>portlet的显示，如果没有传入参数默认使用<b>toggle</b>，如果传入了参数[hide, show]则执行单个动画。

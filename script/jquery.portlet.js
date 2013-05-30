@@ -15,7 +15,14 @@
             columns: {},
             sortable: true,
             singleView: true,
-            removeItem: null
+            removeItem: null,
+            events: {
+                drag: {
+                    start: null,
+                    stop: null,
+                    over: null
+                }
+            }
         },
 
         /**
@@ -243,8 +250,24 @@
          * @param  {[type]} value [true|false]
          */
         _sortable: function(value) {
+            var o = this.options;
             var st = $(".ui-portlet-column", this.element).sortable({
-                connectWith: ".ui-portlet-column"
+                connectWith: ".ui-portlet-column",
+                start: function(event, ui) {
+                    if ($.isFunction(o.events.drag.start)) {
+                        o.events.drag.start.call(ui.item[0], event, ui);
+                    }
+                },
+                stop: function(event, ui) {
+                    if ($.isFunction(o.events.drag.stop)) {
+                        o.events.drag.stop.call(ui.item[0], event, ui);
+                    }
+                },
+                over: function(event, ui) {
+                    if ($.isFunction(o.events.drag.over)) {
+                        o.events.drag.over.call(ui.item[0], event, ui);
+                    }
+                }
             });
             if(value === true) {
                 $(this.element).find('.ui-portlet-header').css('cursor', 'move');
