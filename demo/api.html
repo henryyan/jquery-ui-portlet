@@ -138,8 +138,64 @@
 			<th>描述</th>
 		</tr>
 		<tr>
-			<td>sortable</td>
-			<td>设置开启/禁用拖动功能</td>
+			<td>
+				<a href="disable-drag.html">sortable</a>
+			</td>
+			<td>
+				设置开启/禁用拖动功能
+				<pre>$('#portlet-demo').portlet('option', 'sortable', false);</pre>
+			</td>
+		</tr>
+	</table>
+
+	<table class="parameters" style='margin-bottom: 2em;'>
+		<caption align="left">表4--jQuery UI Portlet 插件方法&nbsp;$('#portlet1').portlet('method_name')</caption>
+		<tr>
+			<th>方法名称</th>
+			<th>描述</th>
+			<th>结果或用法</th>
+		</tr>
+		<tr>
+			<td>
+				<a href="getindexs.html">index</a>
+			</td>
+			<td>获取每一个portlet的XY坐标</td>
+			<td>
+				<pre>
+var indexs = $('#portlet-demo').portlet('index');
+
+{
+	news: {
+		x: 0,
+		y: 3
+	}
+}
+				</pre>
+				表示ID为news的portlet在第一列第4行
+			</td>
+		</tr>
+		<tr>
+			<td>destroy</td>
+			<td>销毁</td>
+			<td>
+				<pre>$('#aaa').portlet('destroy');</pre>
+			</td>
+		</tr>
+		<tr>
+			<td><a href="toggle.html">toggle</a></td>
+			<td>
+				切换<b>单个</b>portlet的显示，如果没有传入参数默认使用<b>toggle</b>，如果传入了参数[hide, show]则执行单个动画。
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				<a href="toggle.html">toggleAll</a>
+			</td>
+			<td>
+				切换<b>全部</b>portlet的显示，如果没有传入参数默认使用<b>toggle</b>，如果传入了参数[hide, show]则执行单个动画。
+			</td>
+			<td></td>
 		</tr>
 	</table>
 </body>

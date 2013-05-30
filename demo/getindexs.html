@@ -23,22 +23,27 @@
     $(function() {
         $('#portlet-demo').portlet({
             sortable: true,
-            singleView: true,
+            create: function() {
+                //alert('created portlet.');
+            },
+            removeItem: function() {
+                alert('after remove');
+            },
             columns: [{
-                width: 350,
+                width: 250,
                 portlets: [{
                     attrs: {
                         id: 'feeds'
                     },
                     title: function() {
                         var d = new Date();
-                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                        return 'Feeds(' + (d.getMonth() + 1) + '-' + d.getDay() + '日)';
                     },
                     icon: 'ui-icon-signal-diag',
                     content: {
                         //设置区域内容属性
                         style: {
-                            height: 100
+                            height: '200px'
                         },
                         type: 'text',
                         text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
@@ -54,13 +59,16 @@
                     attrs: {
                         id: 'news'
                     },
-                    title: function() {
-                        return 'News' + '（高度：<span class="ui-state-error ui-corner-all">100</span>）';
+                    title: 'News',
+                    beforeRefresh: function() {
+                        alert("before refresh");
                     },
-                    icon: 'ui-icon-document',
+                    afterRefresh: function(data) {
+                        //alert("after refresh: " + data);
+                    },
                     content: {
                         style: {
-                            height: 100
+                            height: '200'
                         },
                         type: 'text',
                         text: function() {
@@ -70,31 +78,53 @@
                     }
                 }]
             }, {
-                width: 500,
+                width: 200,
                 portlets: [{
-                    title: function() {
-                        return 'Ajax' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
+                    attrs: {
+                        id: 'shopping'
                     },
-                    icon: 'ui-icon-info',
+                    title: 'Shopping',
                     content: {
-                        style: {
-                            height: 150
+                        attrs: {
+                            'class': 'highlight-content'
                         },
+                        type: 'text',
+                        text: 'Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>Shopping contens<br/>'
+                    }
+                }]
+            }, {
+                width: 350,
+                portlets: [{
+                    attrs: {
+                        id: 'ajax'
+                    },
+                    title: 'Ajax',
+                    content: {
                         type: 'ajax',
                         url: 'ajax.html'
                     }
                 }, {
-                    title: function() {
-                        return 'Ajax Json Datas' + '（高度：<span class="ui-state-error ui-corner-all">150</span>）';
+                    attrs: {
+                        id: 'ajaxerror'
                     },
-                    icon: 'ui-icon-comment',
+                    title: 'Ajax 错误',
                     content: {
-                        style: {
-                            height: 150
-                        },
+                        type: 'ajax',
+                        url: 'noexsit.html',
+                        error: function() {
+                            $(this).append('<br/><br/>捕获到ajax错误');
+                            // alert('出错了');
+                        }
+                    }
+                }, {
+                    attrs: {
+                        id: 'ajaxjson'
+                    },
+                    title: 'Ajax Json Datas',
+                    content: {
                         type: 'ajax',
                         dataType: 'json',
-                        url: 'ajax-fixed-height.json',
+                        url: 'ajax.json',
                         formatter: function(o, pio, data) {
                             var ct = "<ul>";
                             $.each(data, function() {
@@ -106,16 +136,38 @@
                 }]
             }]
         });
+
+        $('#getindex').button({
+            icons: {
+                primary: 'ui-icon-info'
+            }
+        }).click(function() {
+            var indexs = $('#portlet-demo').portlet('index');
+
+            // 显示
+            $('#index').html('');
+            $.each(indexs, function(k, v) {
+                $('<li/>', {
+                    html: '<strong>' + k + '</strong>：x=' + v.x + ", y=" + v.y
+                }).appendTo('#index');
+            });
+
+        });
     });
     </script>
 </head>
 <body>
     <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
         <p>
-            <span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
-            <strong>提示：</strong>和title属性同级，设置：<code>icon: 'ui-icon-document'</code>
+            获取portlet的XY坐标
         </p>
     </div>
+    <hr class='ui-widget-content' />
+    <div>
+        <button id="getindex">获取行、列</button>
+        <span>var indexs = $('#portlet-demo').portlet('index');</span>
+    </div>
+    <ul id="index"></ul>
     <hr class='ui-widget-content' />
     <div id='portlet-demo'></div>
 

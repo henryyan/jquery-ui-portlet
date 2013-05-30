@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.1.3
+ * jquery.portlet 1.2.0
  *
  * Copyright (c) 2012~2013
  *   咖啡兔 (http://www.kafeitu.me)
@@ -7,10 +7,9 @@
  * Dual licensed under the GPL (http://www.gnu.org/licenses/gpl.html)
  * and MIT (http://www.opensource.org/licenses/mit-license.php) licenses.
  *
- * Detail: http://www.kafeitu.me/jquery-ui-portlet.html
  * Demo: http://www.kafeitu.me/demo/jquery-ui-portlet
  */
-(function($) {
+(function($, undefined){
     $.widget("ui.portlet", {
         options: {
             columns: {},
@@ -129,6 +128,25 @@
         },
 
         /**
+         * get x and y
+         * @return {id: {x: 1, y: 0}}
+         */
+        index: function(a, b) {
+            var self = this.element;
+            var indexs = {};
+            $('.ui-portlet-column').each(function(i, v) {
+                $('.ui-portlet-item', this).each(function(j, v2) {
+                    var id = $(this).attr('id');
+                    indexs[id] = {
+                        x: i,
+                        y: j
+                    };
+                });
+            });
+            return indexs;
+        },
+
+        /**
          * single view
          */
         _regSingleView: function() {
@@ -227,7 +245,7 @@
         _sortable: function(value) {
             var st = $(".ui-portlet-column", this.element).sortable({
                 connectWith: ".ui-portlet-column"
-            }).disableSelection();
+            });
             if(value === true) {
                 $(this.element).find('.ui-portlet-header').css('cursor', 'move');
                 st.sortable('enable');
@@ -250,9 +268,19 @@
             var _this = this;
 
             // toggle contents
-            var toggle = $(".ui-portlet-toggle", this.element).click(function(event) {
-                $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-                $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content").slideToggle();
+            var toggle = $(".ui-portlet-toggle", this.element).click(function(event, type) {
+                var ct = $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content");
+                type = type || 'toggle';
+                if (type == 'toggle') {
+                    ct.slideToggle();
+                    $(_this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+                } else if (type == 'hide') {
+                    ct.slideUp();
+                    $(_this).removeClass("ui-icon-minusthick").addClass("ui-icon-plusthick");
+                } else if (type == 'show') {
+                    ct.slideDown();
+                    $(_this).removeClass("ui-icon-plusthick").addClass("ui-icon-minusthick");
+                }
             }).dblclick(function(event) {
                 event.stopPropagation();
             });
@@ -401,9 +429,25 @@
         },
 
         /**
+         * toggle single portlet
+         */
+        toggle: function(itemId, type) {
+            var self = this.element;
+            $('#' + itemId + ' .ui-portlet-toggle', self).trigger('click', [ type || 'toggle' ]);
+        },
+
+        /**
+         * toggle all portlet
+         */
+        toggleAll: function(type) {
+            var self = this.element;
+            $('.ui-portlet-toggle', self).trigger('click', [ type || 'toggle' ]);
+        },
+
+        /**
          * destory portlet
          */
-        _destroy: function() {
+        destroy: function() {
             this.element.removeClass("ui-portlet").text("");
 
             // call the base destroy function

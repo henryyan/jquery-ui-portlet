@@ -11,6 +11,12 @@ A portlet extend jQuery UI.
 
 ## Changelog
 
+### 1.2.0（2013-05-30）
+
+1. 添加获取所有portlet坐标的方法（所在行、列）
+2. 添加切换单个、全部portlet内容的显示或者隐藏功能（自动根据状态切换、只隐藏、只显示）
+3. 添加销毁功能（destroy）
+
 ### 1.1.3（2013-02-06）
 
 1. 解决设置singleView设置为false无效问题
