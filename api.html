@@ -244,6 +244,49 @@ drag: {
 				<pre>$('#portlet-demo').portlet('option', 'filterRepeat', true);</pre>
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<a href="demo/dynamic-add.html">add(v1.3）</a>
+			</td>
+			<td>
+				动态添加一个Portlet元素，需要传递两个参数:
+				<hr>
+				<dl>
+					<dt>position</dt>
+					<dd>
+						<p><strong>x</strong>：横坐标（所在列的行数），可以是数字也可以是字符（last:表示末尾）</p>
+						<p><strong>y</strong>：纵坐标（哪一列）</p>
+					</dd>
+				</dl>
+				<hr>
+				<pre>
+$('#portlet-demo').portlet('option', 'add', {
+    position: {
+	x: 0,
+	y: 1
+    },
+    portlet: {
+        attrs: {
+            id: 'news'
+        },
+        title: 'News（亲，我是被动态添加的呦）',
+        afterCreated: function() {
+            alert('动态创建了News。。。');
+        },
+        content: {
+            style: {
+                height: '100'
+            },
+            type: 'text',
+            text: function() {
+                return $('#newsTemplate').html();
+            }
+        }
+    }
+});
+				</pre>
+			</td>
+		</tr>
 	</table>
 
 	<table class="parameters" style='margin-bottom: 2em;'>
