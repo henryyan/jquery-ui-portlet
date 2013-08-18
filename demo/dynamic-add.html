@@ -14,7 +14,7 @@
     <!--<script src="../lib/jquery-1.8.3.js" type="text/javascript"></script>-->
     <!--<script src="../lib/themes/jquery-ui-1.9.1.custom.min.js" type="text/javascript"></script>-->
 
-    <script src="../script/jquery.portlet.pack.js?v=1.3.0"></script>
+    <script src="../script/jquery.portlet.pack.js"></script>
     <style>
     body {font-size: 13px;}
     .highlight-content {color: red;}
@@ -23,14 +23,11 @@
     $(function() {
         $('#portlet-demo').portlet({
             sortable: true,
-            create: function() {
-                //alert('created portlet.');
-            },
-            removeItem: function() {
-                alert('after remove');
+            handleRepeat: function(column, pattrs) {
+                return confirm('当前启用了重复过滤，是否允许重复添加' + pattrs.attrs.id + " ？");
             },
             columns: [{
-                width: 250,
+                width: 400,
                 portlets: [{
                     attrs: {
                         id: 'feeds'
@@ -43,7 +40,7 @@
                     content: {
                         //设置区域内容属性
                         style: {
-                            height: '200px'
+                            height: 100
                         },
                         type: 'text',
                         text: '<ul><li>Feed item 1</li><li>Feed item 2</li></ul>',
@@ -55,27 +52,6 @@
                         }
                     },
                     scripts: ['loaded-by-portlet.js']
-                }, {
-                    attrs: {
-                        id: 'news'
-                    },
-                    title: 'News',
-                    beforeRefresh: function() {
-                        alert("before refresh");
-                    },
-                    afterRefresh: function(data) {
-                        //alert("after refresh: " + data);
-                    },
-                    content: {
-                        style: {
-                            height: '200'
-                        },
-                        type: 'text',
-                        text: function() {
-                            return $('#newsTemplate').html();
-                            //return $('#newsTemplate ul');
-                        }
-                    }
                 }]
             }, {
                 width: 200,
@@ -113,7 +89,6 @@
                         url: 'noexsit.html',
                         error: function() {
                             $(this).append('<br/><br/>捕获到ajax错误');
-                            // alert('出错了');
                         }
                     }
                 }, {
@@ -137,61 +112,98 @@
             }]
         });
 
-        $('#toggleAll').button({
+        // 添加新闻模块
+        $('#addNews').button({
             icons: {
-                primary: 'ui-icon-refresh'
+                primary: 'ui-icon-plusthick'
             }
         }).click(function() {
-            $('#portlet-demo').portlet('toggleAll');
+            var positionChar = $('#position').val();
+            var position = {
+                x: positionChar.split(':')[0],
+                y: positionChar.split(':')[1]
+            };
+            $('#portlet-demo').portlet('option', 'add', {
+                target: '#feed',
+                position: position,
+                portlet: {
+                    attrs: {
+                        id: 'news'
+                    },
+                    title: 'News（亲，我是被动态添加的呦）',
+                    afterCreated: function() {
+                        alert('动态创建了News。。。');
+                    },
+                    content: {
+                        style: {
+                            height: '100'
+                        },
+                        type: 'text',
+                        text: function() {
+                            return $('#newsTemplate').html();
+                            //return $('#newsTemplate ul');
+                        }
+                    }
+                }
+            });
+        }); // end add news
+
+        $('#removeFeed').button().click(function() {
+            $('#portlet-demo').portlet('option', 'remove', '#feeds');
         });
 
-        $('#toggleSingle').button({
-            icons: {
-                primary: 'ui-icon-refresh'
-            }
-        }).click(function() {
-            $('#portlet-demo').portlet('toggle', 'shopping');
+        $('#removeNews').button().click(function() {
+            $('#portlet-demo').portlet('option', 'remove', '#news');
         });
 
-        $('#toggleShow').button({
-            icons: {
-                primary: 'ui-icon-refresh'
-            }
-        }).click(function() {
-            $('#portlet-demo').portlet('toggle', 'shopping', 'show');
+        $("#filterRepeat").button().click(function() {
+            $("#status").html('重复过滤状态：' + $('#portlet-demo').portlet('option', 'filterRepeat'));
         });
+
+        $("#filterRepeatEnable").button().click(function() {
+            $('#portlet-demo').portlet('option', 'filterRepeat', true);
+            $("#status").html('已开启重复过滤！');
+        });
+
+        $("#filterRepeatDisable").button().click(function() {
+            $('#portlet-demo').portlet('option', 'filterRepeat', false);
+            $("#status").html('已禁用重复过滤！');
+        });
+
     });
     </script>
 </head>
 <body>
     <div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">
         <p>
-            切换portlet内容的显示隐藏
+            动态添加Portlet演示
         </p>
     </div>
     <hr class='ui-widget-content' />
     <div>
-        <button id="toggleAll">切换全部portlet</button>
-        <span>$('#portlet-demo').portlet('toggleAll');</span>
+        <select id="position">
+            <option value="0:0">第1列开始</option>
+            <option value="last:1">第2列末尾</option>
+            <option value="0:1">第2列开始</option>
+            <option value="1:2">第3列第2行</option>
+        </select>
+        <button id="addNews">动态添加News</button>
+        |
+        <button id="removeFeed">删除Feed</button>
+        <button id="removeNews">删除News</button>
+        |
+        <button id="filterRepeat">获取重复过滤状态</button>
+        <button id="filterRepeatEnable">启用重复过滤</button>
+        <button id="filterRepeatDisable">禁用重复过滤</button>
+        <span id="status"></span>
     </div>
-    <div>
-        <button id="toggleSingle">切换Shopping</button>
-        <span>$('#portlet-demo').portlet('toggle', 'shopping');</span>
-    </div>
-    <div>
-        <button id="toggleShow">显示Shopping</button>
-        <span>$('#portlet-demo').portlet('toggle', 'shopping', 'show');</span>
-    </div>
-
     <hr class='ui-widget-content' />
     <div id='portlet-demo'></div>
 
     <!-- 模板 -->
     <div id="newsTemplate" style="display:none">
-        <ul>
-            <li><a href='http://www.kafeitu.me/'>http://www.kafeitu.me</a></li>
-            <li><a href='https://github.com/henryyan'>https://github.com/henryyan</a></li>
-        </ul>
+        <p>从1.3.0版本开始支持动态添加、删除Portlet了！~~</p>
+        <p>还有很多事件，详情请看API。</p>
     </div>
 </body>
 </html>

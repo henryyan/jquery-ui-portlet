@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.2.0
+ * jquery.portlet 1.3.0
  *
  * Copyright (c) 2012~2013
  *   咖啡兔 (http://www.kafeitu.me)
@@ -12,10 +12,12 @@
 (function($, undefined){
     $.widget("ui.portlet", {
         options: {
-            columns: {},
+            columns: [],
             sortable: true,
             singleView: true,
             removeItem: null,
+            filterRepeat: false,
+            columnWidth: 300,
             events: {
                 drag: {
                     start: null,
@@ -33,74 +35,23 @@
             var _this = this;
             var _ele = _this.element;
             var o = _this.options;
+            
+            // create empty container if no columns
+            if (!o.columns || o.columns.length == 0) {
+                $('<div/>', { width: o.columnWidth }).addClass('ui-portlet-column').appendTo(_ele);
+            }
 
             $.each(o.columns, function(ci, c) {
 
+                // create column
                 var $column = $('<div/>', {
                     width: c.width
                 }).addClass('ui-portlet-column').appendTo(_ele);
 
-                $.each(c.portlets, function(pi, p) {
-
-                    var item = $('<div/>').addClass('ui-portlet-item ui-widget ui-widget-content ui-helper-clearfix ui-corner-all').data('option', p).appendTo($column);
-                    if(p.attrs) {
-                        item.attr(p.attrs);
-                    }
-
-                    // title
-                    var title = $('<div/>', {
-                        'class': 'ui-portlet-header ui-widget-header ui-corner-all',
-                        html: function() {
-                            if($.isFunction(p.title)) {
-                                return p.title;
-                            }
-                            return "<span class='" + p.icon + "'></span>" + p.title;
-                        }
-                    }).appendTo(item);
-
-                    // add icon for title
-                    if(p.icon) {
-                        title.prepend("<span class='ui-portlet-header-icon ui-icon " + p.icon + "'></span>");
-                    }
-
-                    // event element
-                    title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
-                    title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-minusthick ui-portlet-toggle'></span></a>");
-                    title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-closethick ui-portlet-close'></span></a>");
-
-                    // content
-                    var ct = $('<div/>', {
-                        'class': 'ui-portlet-content'
-                    }).appendTo(item);
-
-                    // set content style
-                    if(p.content.style) {
-                        $(ct).css(p.content.style);
-                    }
-
-                    // set attrs
-                    if(p.content.attrs) {
-                        $.each(p.content.attrs, function(k, v) {
-                            var attr = ct.attr(k);
-                            if(attr) {
-                                if(k == 'style' && v.substr(v.length - 1) != ';') {
-                                    attr += ';';
-                                }
-                                if(k == 'class') {
-                                    attr += ' ';
-                                }
-                                attr += v;
-                            }
-                            ct.attr(k, attr);
-                        });
-                    }
-
-                    // load content
-                    _this._content.call(_ele, item, p, function(data) {
-                        // load scripts
-                        _this._loadScripts(p.scripts);
-                    });
-                });
+                // create portlet in column
+                $.each(c.portlets, function(index, portlet) {
+                    _this._createSinglePortlet(_this, _ele, $column, 'last', portlet);
+                }); // end each of columns
             });
 
             // init events
@@ -116,11 +67,132 @@
         },
 
         /**
+         * create single portlet
+         */
+        _createSinglePortlet: function(portlet, _ele, column, positon, pattrs) {
+            var o = portlet.options;
+
+            // filter repeated items
+            if (o.filterRepeat === true) {
+                if (pattrs.attrs.id) {
+                    if ($('#' + pattrs.attrs.id).length > 0) {
+                        // call repeat function
+                        if ($.isFunction(o.handleRepeat)) {
+                            var returnCode = o.handleRepeat.call(_ele, column, pattrs);
+                            if (returnCode === false) {
+                                return;
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // call before create, return if callback return false
+            if ($.isFunction(pattrs.beforeCreate)) {
+                var returnCode = pattrs.beforeCreate.call(_ele, positon);
+                if (!returnCode) {
+                    return;
+                }
+            }
+
+            // create portlet item(container)
+            var item = $('<div/>').addClass('ui-portlet-item ui-widget ui-widget-content ui-helper-clearfix ui-corner-all')
+                        .data('option', pattrs);
+            if (positon === 'last') {
+                item.appendTo(column);
+            } else {
+                if (positon.x === 'last') {
+                    item.insertAfter($(column).find('.ui-portlet-item:last'));
+                } else {
+                    item.insertBefore($(column).find('.ui-portlet-item').eq(positon.x));
+                }
+            }
+            if(pattrs.attrs) {
+               item.attr(pattrs.attrs);
+            }
+
+            // title
+            var title = $('<div/>', {
+                'class': 'ui-portlet-header ui-widget-header ui-corner-all',
+                html: function() {
+                    if($.isFunction(pattrs.title)) {
+                        return pattrs.title;
+                    }
+                    if(pattrs.icon) {
+                        return "<span class='" + pattrs.icon + "'></span>" + pattrs.title;
+                    } else {
+                        return pattrs.title;
+                    }
+                }
+            }).appendTo(item);
+
+            // set icon for title
+            if(pattrs.icon) {
+                title.prepend("<span class='ui-portlet-header-icon ui-icon " + pattrs.icon + "'></span>");
+            }
+
+            // event element
+            title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
+            title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-minusthick ui-portlet-toggle'></span></a>");
+            title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-closethick ui-portlet-close'></span></a>");
+
+            // content
+            var ct = $('<div/>', {
+                'class': 'ui-portlet-content'
+            }).appendTo(item);
+
+            // set content style
+            if(pattrs.content.style) {
+                $(ct).css(pattrs.content.style);
+            }
+
+            // set attrs
+            if(pattrs.content.attrs) {
+                $.each(pattrs.content.attrs, function(k, v) {
+                    var attr = ct.attr(k);
+                    if(attr) {
+                        if(k == 'style' && v.substr(v.length - 1) != ';') {
+                            attr += ';';
+                        }
+                        if(k == 'class') {
+                            attr += ' ';
+                        }
+                        attr += v;
+                    }
+                    ct.attr(k, attr);
+                });
+            }
+
+            // load content
+            portlet._content.call(_ele, item, pattrs, function(data) {
+                // load scripts
+                portlet._loadScripts(pattrs.scripts, function() {
+                    // call before show
+                    if ($.isFunction(pattrs.afterLoadContent)) {
+                        pattrs.afterLoadContent.call(item, item.find('.ui-portlet-content'));
+                    }
+                });
+            });
+
+            // call after create
+            if ($.isFunction(pattrs.afterCreated)) {
+                pattrs.afterCreated.call(_ele);
+            }
+
+            return item;
+        },
+
+        /**
          * set option for plugin
          * @param {[type]} key   key
          * @param {[type]} value value
          */
         _setOption: function(key, value) {
+            var self = this.element;
+            var o = this.options;
+
             // static options
             if(this.options[key]) {
                 this.options[key] = value;
@@ -128,9 +200,22 @@
 
             // need handle speical
             switch(key) {
-            case "sortable":
-                this._sortable(value);
-                break;
+                case "sortable":
+                    this._sortable(value);
+                    break;
+                case "add":
+                    this._addSingle(value);
+                    break;
+                case "remove":
+                    $(value, self).find('.ui-portlet-close').trigger('click');
+                    break;
+                case "filterRepeat":
+                    if (value == null || value == undefined) {
+                        return o.filterRepeat;
+                    } else {
+                        o.filterRepeat = value;
+                        break;
+                    }
             }
         },
 
@@ -232,7 +317,7 @@
          * load java scripts
          * @param  {[string]} scripts [description]
          */
-        _loadScripts: function(scripts) {
+        _loadScripts: function(scripts, callback) {
             if(scripts) {
                 $.each(scripts, function() {
                     var head = $('head').remove('#loadScript');
@@ -242,6 +327,9 @@
                         id: 'loadScript'
                     }).appendTo(head);
                 });
+            }
+            if ($.isFunction(callback)) {
+                callback();
             }
         },
 
@@ -284,14 +372,46 @@
         },
 
         /**
+         * add a portlet
+         */
+        _addSingle: function(option) {
+            var _this = this;
+            var _ele = _this.element;
+            var o = this.options;
+            var addOpt = option;
+            var column;
+            if ($('.ui-portlet-column', _ele).eq(addOpt.position.y).length > 0) {
+                column = $('.ui-portlet-column', _ele).eq(addOpt.position.y);
+            } else {
+                column = $('.ui-portlet-column', _ele).eq(0);
+            }
+            console.log(column);
+            // create portlet
+            var item = _this._createSinglePortlet(_this, _ele, column, option.position, option.portlet);
+
+            // init events
+            _this._initEvents(item);
+
+            // bind single view
+            if (o.singleView === true) {
+                _this._regSingleView();
+            }
+
+            // enable/disable sortable
+            _this._sortable(o.sortable);
+
+        },
+
+        /**
          * events and handlers
          * @return {[type]} [description]
          */
-        _initEvents: function() {
+        _initEvents: function(element) {
             var _this = this;
+            var _ele = element || this.element;
 
             // toggle contents
-            var toggle = $(".ui-portlet-toggle", this.element).click(function(event, type) {
+            var toggle = $(".ui-portlet-toggle", _ele).click(function(event, type) {
                 var ct = $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content");
                 type = type || 'toggle';
                 if (type == 'toggle') {
@@ -308,13 +428,13 @@
                 event.stopPropagation();
             });
 
-            var refresh = $(".ui-portlet-refresh", this.element).click(function(event) {
+            var refresh = $(".ui-portlet-refresh", _ele).click(function(event) {
                 _this.refresh.call(_this, event);
             }).dblclick(function(event) {
                 event.stopPropagation();
             });
 
-            var close = $(".ui-portlet-close", this.element).click(function(event) {
+            var close = $(".ui-portlet-close", _ele).click(function(event) {
                 _this._destoryItem.call(_this, event);
             }).dblclick(function(event) {
                 event.stopPropagation();
@@ -341,6 +461,17 @@
         _destoryItem: function(event) {
             var o = this.options;
             var item = $(event.target).parents('.ui-portlet-item');
+            var itemOpt = item.data('option');
+
+            // filter remove item
+            if ($.isFunction(itemOpt.beforeRemove)) {
+                var returnCode = itemOpt.beforeRemove();
+                if (!returnCode) {
+                    return;
+                }
+            }
+
+            // do remove
             item.remove();
             if($.isFunction(o.removeItem)) {
                 o.removeItem();

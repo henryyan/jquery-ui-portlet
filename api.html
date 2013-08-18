@@ -21,26 +21,31 @@
 			<th>参数</th>
 			<th>描述</th>
 			<th>默认值</th>
+			<th>返回值</th>
 		</tr>
 		<tr>
 			<td>sortable</td>
 			<td>是否启用拖动功能，内部调用sortable插件</td>
 			<td>true</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>singleView</td>
 			<td>是否开启单视图模式，双击标题栏可启用单视图模式</td>
 			<td>true</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>create</td>
 			<td>当创建portlet组件时被调用</td>
 			<td>null</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>removeItem</td>
 			<td>关闭一个portlet时的回调函数</td>
 			<td>null</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>
@@ -48,6 +53,7 @@
 			</td>
 			<td>见表2</td>
 			<td>null</td>
+			<td></td>
 		</tr>
 		<tr>
 			<td>
@@ -62,9 +68,25 @@ drag: {
 }
 </pre>
 			</td>
+			<td>没有默认事件</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td>
-				没有默认事件
+				<a href="demo/dynamic-add.html">filterRepeat（v1.3）</a>
 			</td>
+			<td>是否开启重复对象的过滤，例如同一个ID的Portlet只允许创建一次；如果该属性设置为true则拦截，如果同时指定了handleRepeat属性则调用</td>
+			<td>false</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><a href="demo/dynamic-add.html">handleRepeat（v1.3）</a></td>
+			<td>
+				和filterRepeat属性配合使用，如果filterRepeat属性为true该函数将被调用；并要求返回true或者false，
+				返回值为true时允许创建重复的Portlet，否则不允许。
+			</td>
+			<td>null</td>
+			<td>true|false</td>
 		</tr>
 	</table>
 
@@ -88,30 +110,60 @@ drag: {
 						<th>参数</th>
 						<th>描述</th>
 						<th>默认值</th>
+						<th>返回值</th>
 					</tr>
 					<tr>
 						<td>attrs</td>
 						<td>portlet的属性， json数组格式</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>title</td>
 						<td>portlet的title，支持：静态文本，function</td>
 						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>icon</td>
 						<td>标题栏左侧的图标，使用jQuery UI提供的图标. icon: 'ui-icon-person'</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>beforeCreate(v1.3)</td>
+						<td>创建Portlet元素时调用，该function需要返回一个boolean值，true允许创建，false不允许</td>
+						<td>&nbsp;</td>
+						<td>true|false</td>
+					</tr>
+					<tr>
+						<td>afterCreated(v1.3)</td>
+						<td>创建Portlet元素后</td>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td>beforeRemove(v1.3)</td>
+						<td>删除一个Portlet元素时，该function需要返回一个boolean值，true允许创建，false不允许</td>
+						<td>&nbsp;</td>
+						<td>true|false</td>
+					</tr>
+					<tr>
+						<td>afterLoadContent(v1.3)</td>
+						<td>内容载入完成后</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>beforeRefresh</td>
 						<td>刷新portlet之前被调用</td>
 						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>afterRefresh</td>
 						<td>刷新portlet之后被调用</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
@@ -124,6 +176,7 @@ drag: {
 								<li><b>recovery:</b>关闭（还原）单视图模式后回调</li>
 							</ul>
 						</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
@@ -142,10 +195,12 @@ drag: {
 							</ul>
 						</td>
 						<td>&nbsp;</td>
+						<td>&nbsp;</td>
 					</tr>
 					<tr>
 						<td>scripts</td>
 						<td>数组：指定portlet加载完内容后的js文件路径</td>
+						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
 				</table>
@@ -160,12 +215,33 @@ drag: {
 			<th>描述</th>
 		</tr>
 		<tr>
-			<td>
+			<td width="120">
 				<a href="demo/disable-drag.html">sortable</a>
 			</td>
 			<td>
 				设置开启/禁用拖动功能
 				<pre>$('#portlet-demo').portlet('option', 'sortable', false);</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="demo/dynamic-add.html">remove（v1.3）</a>
+			</td>
+			<td>
+				删除一个Portlet，下面的代码表示删除ID为feeds的Portlet
+				<pre>$('#portlet-demo').portlet('option', 'remove', '#feeds');</pre>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="demo/dynamic-add.html">filterRepeat（v1.3）</a>
+			</td>
+			<td>
+				获取或者设置filterRepeat属性。
+				下面的代码将返回filterRepeat的值：
+				<pre>$('#portlet-demo').portlet('option', 'filterRepeat');</pre>
+				下面的代码将更改filterRepeat的值：
+				<pre>$('#portlet-demo').portlet('option', 'filterRepeat', true);</pre>
 			</td>
 		</tr>
 	</table>
