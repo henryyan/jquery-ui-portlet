@@ -9,6 +9,12 @@ A portlet extend jQuery UI.
 
 **浏览器支持：**Chrome、Firefox、Safari、IE6+
 
+## Downloads
+
+* [jquery.portlet.js(21k)](https://raw.github.com/henryyan/jquery-ui-portlet/master/script/jquery.portlet.js)
+* [jquery.portlet.min.js(9.8k)](https://raw.github.com/henryyan/jquery-ui-portlet/master/script/jquery.portlet.min.js)
+* [jquery.portlet.pack.js(6.2k)](https://raw.github.com/henryyan/jquery-ui-portlet/master/script/jquery.portlet.pack.js)
+
 ## Changelog
 
 ### 1.3.0（2013-08-18）
