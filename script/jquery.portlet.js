@@ -407,11 +407,12 @@
          * @return {[type]} [description]
          */
         _initEvents: function(element) {
-            var _this = this;
+            //var _this = this;
             var _ele = element || this.element;
 
             // toggle contents
             var toggle = $(".ui-portlet-toggle", _ele).click(function(event, type) {
+                var _this = this;
                 var ct = $(this).parents(".ui-portlet-item:first").find(".ui-portlet-content");
                 type = type || 'toggle';
                 if (type == 'toggle') {
