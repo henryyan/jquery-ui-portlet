@@ -1,5 +1,5 @@
 /*
- * jquery.portlet 1.3.0
+ * jquery.portlet 1.3.1
  *
  * Copyright (c) 2012~2013
  *   咖啡兔 (http://www.kafeitu.me)
@@ -8,6 +8,7 @@
  * and MIT (http://www.opensource.org/licenses/mit-license.php) licenses.
  *
  * Demo: http://www.kafeitu.me/demo/jquery-ui-portlet
+ * Github: https://github.com/henryyan/jquery-ui-portlet
  */
 (function($, undefined){
     $.widget("ui.portlet", {
@@ -252,7 +253,7 @@
                     $(_ele).find('.ui-portlet-item').show();
                     $item.removeClass('ui-portlet-single-view').animate({
                         width: $item.data('width'),
-                        height: $item.data('height')
+                        height: 'auto' // important
                     }).css({
                         position: 'static'
                     }).removeData('width').removeData('height');
@@ -416,13 +417,13 @@
                 type = type || 'toggle';
                 if (type == 'toggle') {
                     ct.slideToggle();
-                    $(_this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+                    $(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
                 } else if (type == 'hide') {
                     ct.slideUp();
-                    $(_this).removeClass("ui-icon-minusthick").addClass("ui-icon-plusthick");
+                    $(this).removeClass("ui-icon-minusthick").addClass("ui-icon-plusthick");
                 } else if (type == 'show') {
                     ct.slideDown();
-                    $(_this).removeClass("ui-icon-plusthick").addClass("ui-icon-minusthick");
+                    $(this).removeClass("ui-icon-plusthick").addClass("ui-icon-minusthick");
                 }
             }).dblclick(function(event) {
                 event.stopPropagation();
