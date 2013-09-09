@@ -322,7 +322,7 @@
             if(scripts) {
                 $.each(scripts, function() {
                     var head = $('head').remove('#loadScript');
-                    $("<script>" + "</script>").attr({
+                    $("<script></script>").attr({
                         src: this,
                         type: 'text/javascript',
                         id: 'loadScript'
