@@ -31,6 +31,12 @@
             $('body').layout({
                 west: {
                     size: 160
+                },
+                onresize :  function() {
+                  setTimeout(function() {
+                    $('#mainFrame').width($('#RightPane').width() - 4);
+                    $('#mainFrame').height($('#RightPane').height() - 4);
+                  }, 500);
                 }
             });
             $('#mainFrame').width($('#RightPane').width() - 4);
@@ -43,13 +49,6 @@
                 $(this).parent().addClass('ui-state-active');
                 $('#mainFrame').attr('src', $(this).attr('rel'));
             });
-
-            window.onresize = function() {
-                setTimeout(function() {
-                    $('#mainFrame').width($('#RightPane').width() - 4);
-                    $('#mainFrame').height($('#RightPane').height() - 4);
-                }, 500);
-            };
         });
     </script>
 </head>
