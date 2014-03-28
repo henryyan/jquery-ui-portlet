@@ -137,9 +137,8 @@
             // event element
             title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
             title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-minusthick ui-portlet-toggle'></span></a>");
-            title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-newwin ui-portlet-max'></span></a>");
             title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-closethick ui-portlet-close'></span></a>");
-
+            title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-newwin ui-portlet-max'></span></a>");
             // content
             var ct = $('<div/>', {
                 'class': 'ui-portlet-content'
