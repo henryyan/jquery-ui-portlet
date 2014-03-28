@@ -266,9 +266,9 @@
               if($item.hasClass('ui-portlet-single-view')) {
                     $(_ele).find('.ui-portlet-item').show();
                     $item.removeClass('ui-portlet-single-view').animate({
-                        width: $item.data('width')+2, //BUG #28713: portlet在全屏，又返回时，高度减少了2px 
+                        width: $item.data('width')+2, // portlet在全屏，又返回时，高度减少了2px 
                         height: p.content.style ? p.content.style.height+$($item.children()[0]).outerHeight()+8:'auto'
-                      //height:($item.data('height')+2) //BUG #28713: portlet在全屏，又返回时，高度减少了2px 
+                      //height:($item.data('height')+2) // portlet在全屏，又返回时，高度减少了2px 
                     }).css({
                         position: 'static'
                     }).removeData('width').removeData('height');
