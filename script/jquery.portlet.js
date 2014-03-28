@@ -137,6 +137,7 @@
             // event element
             title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-refresh ui-portlet-refresh'></span></a>");
             title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-minusthick ui-portlet-toggle'></span></a>");
+            title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-newwin ui-portlet-max'></span></a>");
             title.prepend("<a href='#' class='ui-corner-all ui-portlet-event'><span class='ui-icon ui-icon-closethick ui-portlet-close'></span></a>");
 
             // content
@@ -239,21 +240,36 @@
             return indexs;
         },
 
+      move: function(id, x, y) {
+        var _this = this;
+        var _ele = _this.element;
+        var o = this.options;
+        var column;
+        column = $('.ui-portlet-column', _ele).eq(x);
+        // console.log(column);
+        var row=$(column).find('.ui-portlet-item').eq(y);
+        // // console.log(row);
+        $(id).detach().insertBefore(row);
+      },
+
+
         /**
          * single view
          */
         _regSingleView: function() {
             var _ele = this.element;
-            $(_ele).find('.ui-portlet-header').dblclick(function() {
+            var maxFun = function() {
                 var $item = $(this).parents('.ui-portlet-item');
                 var p = $item.data('option');
 
                 // recovery normal model
-                if($item.hasClass('ui-portlet-single-view')) {
+              $item.css({height:'auto'});
+              if($item.hasClass('ui-portlet-single-view')) {
                     $(_ele).find('.ui-portlet-item').show();
                     $item.removeClass('ui-portlet-single-view').animate({
-                        width: $item.data('width'),
-                        height: 'auto' // important
+                        width: $item.data('width')+2, //BUG #28713: portlet在全屏，又返回时，高度减少了2px 
+                        height: p.content.style ? p.content.style.height+$($item.children()[0]).outerHeight()+8:'auto'
+                      //height:($item.data('height')+2) //BUG #28713: portlet在全屏，又返回时，高度减少了2px 
                     }).css({
                         position: 'static'
                     }).removeData('width').removeData('height');
@@ -287,6 +303,8 @@
                             } else {
                                 wh.width = p.singleView.width;
                             }
+                        }else{
+                          wh.width = $(window).width() * 0.85;
                         }
                         if(p.singleView.height) {
                             if($.isFunction(p.singleView.height)) {
@@ -294,11 +312,15 @@
                             } else {
                                 wh.height = p.singleView.height;
                             }
+                        }else{
+                          wh.height = $(window).height() * 0.85;
                         }
 
                     } else {
-                        // use default width
-                        wh.width = $(_ele).width() + 14;
+                      // use default width
+                      wh.width = $(window).width() * 0.85;
+		      wh.height = $(window).height() * 0.85;
+
                     }
 
                     $item.animate({
@@ -311,7 +333,10 @@
                         p.singleView.enable.call($item, p);
                     }
                 }
-            });
+            };
+
+           $(_ele).find('.ui-portlet-header').dblclick(maxFun);
+           $(_ele).find('.ui-portlet-max').click(maxFun);
         },
 
         /**
