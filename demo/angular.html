@@ -1,0 +1,8 @@
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <div data-ng-app>
+        单价： <input type="number" min=0 ng-model="price" ng-init="price = 299">
+        <br>
+        数量： <input type="number" min=0 ng-model="quantity" ng-init="quantity = 1">
+        <br>
+        总价： {{ quantity * price }}
+    </div>
